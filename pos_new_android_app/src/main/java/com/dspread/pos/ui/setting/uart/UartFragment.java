@@ -25,18 +25,4 @@ public class UartFragment extends BaseConnectionFragment<FragmentUartBinding, Co
         return ConnectionViewModel.class;
     }
 
-    @Override
-    public void initViewObservable() {
-        super.initViewObservable();
-        viewModel.uartSwitchState.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if(aBoolean){
-                    viewModel.openUart();
-                }else {
-                    viewModel.close(POS_TYPE.UART);
-                }
-            }
-        });
-    }
 }

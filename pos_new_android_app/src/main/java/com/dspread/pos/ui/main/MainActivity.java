@@ -19,9 +19,12 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 
 import com.dspread.pos.ui.base.TitleProvider;
@@ -58,16 +61,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
     ActionBarDrawerToggle toggle;
     private int currentFragmentIndex = -1;
+    private NavController navController;
 
     @Override
     public void initParam() {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-    }
-
-
-    public void switchFragment(int index) {
-
     }
 
     @Override
@@ -83,6 +82,19 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     @Override
     public void initData() {
         super.initData();
+        // 获取 NavController
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.nav_host_fragment);
+        if (navController != null) {
+            // 设置预加载数量
+            navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+                // 预加载下一个 Fragment
+                if (destination.getId() == R.id.nav_home) {
+                    navController.navigate(R.id.nav_setting, null, null, null);
+                    navController.popBackStack();
+                }
+            });
+        }
         viewModel = new MainViewModel(getApplication(), this);
         binding.setVariable(BR.viewModel, viewModel);
         drawerLayout = binding.drawerLayout;
@@ -92,7 +104,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         deviceConnectType = headerView.findViewById(R.id.device_connect_type);
         tvAppVersion = headerView.findViewById(R.id.tv_appversion);
         menuItem = navigationView.getMenu().findItem(R.id.nav_printer);
-        drawerStateChanged();
         setSupportActionBar(toolbar);
         navigationView.bringToFront();
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -119,9 +130,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         viewModel.changeDrawerLayout.observe(this, new Observer<View>() {
             @Override
             public void onChanged(View drawerView) {
-                String packageVersionName = DevUtils.getPackageVersionName(MainActivity.this, "com.dspread.demoui");
+                String packageVersionName = DevUtils.getPackageVersionName(MainActivity.this, "com.dspread.pos_new_android_app");
                 tvAppVersion.setText(getString(R.string.app_version) + packageVersionName);
-                drawerStateChanged();
                 hideKeyboard(drawerView);
             }
         });
@@ -137,7 +147,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             toolbar.setTitle(getString(R.string.menu_payment));
-            switchFragment(0);
+//            switchFragment(0);
             drawerLayout.close();
             exit();
             return true;
@@ -155,11 +165,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             return;
         }
         transaction = getSupportFragmentManager().beginTransaction();
+
         if(currentFragmentIndex != -1) {
             transaction.hide(mFragments.get(currentFragmentIndex));
         }
         if (!mFragments.get(index).isAdded()) {
-            transaction.add(R.id.nav_host_fragment_content_main, mFragments.get(index), String.valueOf(index));
+            transaction.add(R.id.nav_host_fragment, mFragments.get(index), String.valueOf(index));
         }
         transaction.show(mFragments.get(index));
         transaction.commitAllowingStateLoss();
@@ -167,10 +178,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
          if (mFragments.get(currentFragmentIndex) instanceof TitleProvider) {
             setToolbarTitle(((TitleProvider) mFragments.get(currentFragmentIndex)).getTitle());
         }
-    }
-
-    public void drawerStateChanged() {
-
     }
 
     public void exitApp(){

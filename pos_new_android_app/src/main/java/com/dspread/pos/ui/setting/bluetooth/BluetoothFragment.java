@@ -19,6 +19,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.dspread.pos.enums.POS_TYPE;
+import com.dspread.pos.interfaces.MyCustomQPOSCallback;
 import com.dspread.pos.ui.setting.BaseConnectionFragment;
 import com.dspread.pos.ui.setting.ConnectionViewModel;
 import com.dspread.pos.utils.TRACE;

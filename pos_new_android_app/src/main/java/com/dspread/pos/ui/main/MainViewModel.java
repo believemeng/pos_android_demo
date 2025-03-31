@@ -5,7 +5,10 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.dspread.pos.manager.FragmentCacheManager;
 import com.dspread.pos.ui.base.TitleProvider;
 import com.dspread.pos.ui.home.HomeFragment;
 import com.dspread.pos.ui.setting.ViewPagerGroupFragment;
@@ -30,11 +33,14 @@ public class MainViewModel extends BaseViewModel {
     public List<Fragment> fragments;
 
     private WeakReference<MainActivity> activityRef;
+    private Fragment currentFragment;
 
     public MainViewModel(@NonNull Application application, MainActivity activity) {
         super(application);
+        TRACE.i("main activity init");
         this.activityRef = new WeakReference<>(activity);
-        initFragments();
+        this.activity = activity;
+//        initFragments();
     }
 
 
@@ -62,37 +68,43 @@ public class MainViewModel extends BaseViewModel {
         handleNavigationItemClick(integer);
     });
 
-    private void initFragments() {
-        fragments = new ArrayList<>();
-        // add fragment to list
-        fragments.add(new HomeFragment());
-        fragments.add(new ViewPagerGroupFragment());
-//        fragments.add(new DeviceInfoFragment());
-//        fragments.add(new DeviceUpdataFragment());
-//        fragments.add(new AboutFragment());
-//        fragments.add(new LogsFragment());
-//        fragments.add(new PrinterHelperFragment());
-//        fragments.add(new ScanFragment());
-//        fragments.add(new MifareCardsFragment());
-    }
-
     private void handleNavigationItemClick(int itemId) {
         MainActivity activity = activityRef.get();
         if (activity == null) return;
-        int fragmentIndex = -1;
+        
+        Fragment targetFragment;
+        // 从缓存中获取Fragment
+        if (FragmentCacheManager.getInstance().hasFragment(itemId)) {
+            targetFragment = FragmentCacheManager.getInstance().getFragment(itemId);
+        } else {
+            // 创建新的Fragment并缓存
+            targetFragment = createFragment(itemId);
+            if (targetFragment != null) {
+                FragmentCacheManager.getInstance().putFragment(itemId, targetFragment);
+            }
+        }
+        
+        if (targetFragment != null) {
+            switchFragment(targetFragment);
+            // 设置标题
+            if (targetFragment instanceof TitleProvider) {
+                activity.setTitle(((TitleProvider) targetFragment).getTitle());
+            }
+        }
+    }
+
+    private Fragment createFragment(int itemId) {
         switch (itemId) {
             case R.id.nav_home:
-                fragmentIndex = 0;
-                break;
-            case R.id.nav_printer:
-                fragmentIndex = 1;
-                break;
-            case R.id.nav_scan:
-                fragmentIndex = 2;
-                break;
+                return new HomeFragment();
             case R.id.nav_setting:
-                fragmentIndex = 3;
-                break;
+                return new ViewPagerGroupFragment();
+//            case R.id.nav_printer:
+//                fragmentIndex = 1;
+//                break;
+//            case R.id.nav_scan:
+//                fragmentIndex = 2;
+//                break;
 //            case R.id.nav_deviceinfo:
 //                fragmentIndex = 2;
 //                break;
@@ -113,16 +125,27 @@ public class MainViewModel extends BaseViewModel {
 //                fragmentIndex = 9;
 //                break;
         }
-        if (fragmentIndex != -1 && fragmentIndex <9) {
-            activity.switchFragment(fragments,fragmentIndex);
-            // 设置标题
-            Fragment currentFragment = fragments.get(fragmentIndex);
-            if (currentFragment instanceof TitleProvider) {
-                activity.setTitle(((TitleProvider) currentFragment).getTitle());
-            }
-        }else if(fragmentIndex == 9){
-            activity.exitApp();
-        }
+
+        return null;
     }
 
+
+    private void switchFragment(Fragment targetFragment) {
+        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        // 隐藏当前Fragment，显示目标Fragment
+        if (currentFragment != null) {
+            transaction.hide(currentFragment);
+        }
+
+        if (!targetFragment.isAdded()) {
+            transaction.add(R.id.nav_host_fragment, targetFragment);
+        } else {
+            transaction.show(targetFragment);
+        }
+
+        transaction.commitAllowingStateLoss();
+        currentFragment = targetFragment;
+    }
 }

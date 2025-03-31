@@ -121,7 +121,7 @@ public class MyQposClass extends CQPOSService {
 
     @Override
     public void onRequestSetAmount() {
-        TRACE.d("onRequestSetAmount()");
+        TRACE.d("parent onRequestSetAmount()");
         MyCustomQPOSCallback callback = callbackManager.getCallback(MyCustomQPOSCallback.class);
         if (callback != null) {
             callback.onRequestSetAmount();
@@ -188,6 +188,7 @@ public class MyQposClass extends CQPOSService {
 
     @Override
     public void onRequestQposDisconnected() {
+        TRACE.d("parent disconnected()");
         MyCustomQPOSCallback callback = callbackManager.getCallback(MyCustomQPOSCallback.class);
         if (callback != null) {
             callback.onRequestQposDisconnected();

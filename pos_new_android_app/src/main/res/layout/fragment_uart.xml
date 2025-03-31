@@ -50,10 +50,13 @@
                         android:textSize="16sp"
                         android:textColor="#666666"/>
 
+<!--                    android:checked="@{viewModel.uartSwitchChecked}"-->
                     <Switch
+                        android:id="@+id/uart_switch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:checked="@={viewModel.uartSwitchState}"/>
+                        android:checked="@={viewModel.uartSwitchChecked}"
+                        android:onCheckedChanged="@{(switch, isChecked) -> viewModel.uartSwitchCheckedCommand.execute(isChecked)}"/>
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>

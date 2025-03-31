@@ -11,10 +11,10 @@ import androidx.annotation.NonNull;
 import androidx.databinding.ObservableArrayList;
 import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableList;
-import androidx.lifecycle.MutableLiveData;
 
 import com.dspread.pos.MyBaseApplication;
 import com.dspread.pos.enums.POS_TYPE;
+import com.dspread.pos.ui.base.BaseConnectionViewModel;
 import com.dspread.pos.ui.setting.bluetooth.MultiRecycleHeadViewModel;
 import com.dspread.pos.ui.setting.bluetooth.MultiRecycleLeftItemViewModel;
 import com.dspread.pos.ui.setting.usb.USBClass;
@@ -26,7 +26,6 @@ import com.dspread.xpos.QPOSService;
 import java.util.ArrayList;
 
 import me.goldze.mvvmhabit.base.BaseApplication;
-import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.base.MultiItemViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
@@ -37,9 +36,10 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
 import me.tatarka.bindingcollectionadapter2.ItemBinding;
 import me.tatarka.bindingcollectionadapter2.OnItemBind;
 
-public class ConnectionViewModel extends BaseViewModel {
+public class ConnectionViewModel extends BaseConnectionViewModel {
+    private boolean isProcessing = false;
     public SingleLiveEvent<RadioButton> connectionChangeEvent = new SingleLiveEvent<>();
-    public MutableLiveData<Boolean> uartSwitchState = new MutableLiveData<>();
+    public ObservableField<Boolean> uartSwitchChecked = new ObservableField<>();
     public ObservableField<String> connectionStatus = new ObservableField<>("Connection Method");
     public ObservableField<String> uartConnectionStatus = new ObservableField<>("Connection Method");
     public ObservableField<String> usbConnectionStatus = new ObservableField<>("Connection Disconnected");
@@ -63,15 +63,13 @@ public class ConnectionViewModel extends BaseViewModel {
 
     //add ObservableList for RecyclerView
     public ObservableList<MultiItemViewModel> observableList = new ObservableArrayList<>();
+
     public ConnectionViewModel(@NonNull Application application) {
         super(application);
         if(myBaseApplication == null){
             myBaseApplication = (MyBaseApplication) BaseApplication.getInstance();
         }
-
-        pos = myBaseApplication.getQposService();
         spUtils = SPUtils.getInstance();
-
     }
 
     public void initData() {
@@ -128,6 +126,19 @@ public class ConnectionViewModel extends BaseViewModel {
         }
     });
 
+    public BindingCommand<Boolean> uartSwitchCheckedCommand = new BindingCommand<>(new BindingConsumer<Boolean>() {
+        @Override
+        public void call(Boolean isChecked) {
+            TRACE.i("sitch check is "+isChecked);
+            uartSwitchChecked.set(isChecked);
+            if(isChecked){
+                openUart();
+            }else {
+                close(POS_TYPE.UART);
+            }
+        }
+    });
+
     public BindingCommand<RadioButton> bluConnCommand = new BindingCommand(new BindingConsumer<RadioButton>() {
 
         @Override
@@ -159,6 +170,7 @@ public class ConnectionViewModel extends BaseViewModel {
     });
 
     public void close(POS_TYPE posType) {
+        TRACE.d("start close");
         if (pos == null || posType == null) {
             TRACE.d("return close");
         } else if (posType == POS_TYPE.BLUETOOTH) {
@@ -260,45 +272,40 @@ public class ConnectionViewModel extends BaseViewModel {
         isConnecting.set(false);
         isScanning.set(false);
         if(isConnected) {
+            SPUtils.getInstance().put("ConnectionType",POS_TYPE.BLUETOOTH.name());
             connectionStatus.set("Connected the device: " + deviceName);
         }else {
             connectionStatus.set("Connection Method");
+            SPUtils.getInstance().put("ConnectionType","");
         }
     }
 
     public void onUartConnected() {
-        uartSwitchState.setValue(true);
+        uartSwitchChecked.set(true);
         isConnected.set(true);
         uartConnectionStatus.set("Connected Successfully!");
+        SPUtils.getInstance().put("ConnectionType",POS_TYPE.UART.name());
         ToastUtils.showShort("Uart has been connected!");
     }
 
     public void onUsbConnected() {
         isUSBConnected.set(true);
+        SPUtils.getInstance().put("ConnectionType",POS_TYPE.USB.name());
         usbConnectionStatus.set("Connected Successfully!");
     }
 
     public void onDeviceDisconnected(POS_TYPE posType) {
+        TRACE.d("disconnect = "+posType);
+        SPUtils.getInstance().put("ConnectionType","");
         if(posType == POS_TYPE.UART){
             ToastUtils.showShort("Uart has been disconnected!");
             uartConnectionStatus.set("Connected Failed!");
             isConnected.set(false);
+            uartSwitchChecked.set(false);
         }else if(posType == POS_TYPE.USB){
             isUSBConnected.set(false);
             usbConnectionStatus.set("Connection Disconnected!");
         }
     }
-
-    public void onNoDeviceDetected(POS_TYPE posType) {
-        if(posType == POS_TYPE.UART){
-            ToastUtils.showShort("Uart has been disconnected!");
-            uartConnectionStatus.set("Connected Failed!");
-            isConnected.set(false);
-        }else if(posType == POS_TYPE.USB){
-            isUSBConnected.set(false);
-            usbConnectionStatus.set("Connection Disconnected!");
-        }
-    }
-
 
 }

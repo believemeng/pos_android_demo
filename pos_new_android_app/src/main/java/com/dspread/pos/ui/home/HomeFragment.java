@@ -1,5 +1,6 @@
 package com.dspread.pos.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.Gravity;
@@ -8,15 +9,18 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.navigation.Navigation;
 
 import com.dspread.pos.base.BaseFragment;
+import com.dspread.pos.ui.base.TitleProvider;
+import com.dspread.pos.ui.payment.PaymentActivity;
 import com.dspread.pos_new_android_app.BR;
 import com.dspread.pos_new_android_app.R;
 import com.dspread.pos_new_android_app.databinding.FragmentHomeBinding;
 import com.dspread.pos_new_android_app.databinding.FragmentInputMoney1Binding;
 
 
-public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewModel> {
+public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewModel> implements TitleProvider {
 //    private KeyboardUtil keyboardUtil;
     private boolean canshow = true;
     private CountDownTimer showTimer;
@@ -73,8 +77,11 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.HalfScreenDialog);
         builder.setItems(PaymentType.getValues(), (dialog, which) -> {
             String selectedType = PaymentType.getValues()[which];
-            // TODO: 处理选择的支付类型
-
+            // 使用 Intent 启动 PaymentActivity
+            Intent intent = new Intent(getActivity(), PaymentActivity.class);
+            intent.putExtra("amount", String.valueOf(amount));
+            intent.putExtra("transType", selectedType);
+            startActivity(intent);
         });
 
         AlertDialog dialog = builder.create();
@@ -96,6 +103,11 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         if (getActivity() != null) {
             getActivity().finish();
         }
+    }
+
+    @Override
+    public String getTitle() {
+        return "Payment";
     }
 }
 

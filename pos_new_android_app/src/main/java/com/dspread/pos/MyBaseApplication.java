@@ -7,6 +7,7 @@ import android.os.Looper;
 
 
 import com.dspread.pos.base.MyQposClass;
+import com.dspread.pos.manager.FragmentCacheManager;
 import com.dspread.pos.ui.main.MainActivity;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_new_android_app.R;
@@ -25,50 +26,39 @@ import okhttp3.OkHttpClient;
  */
 public class MyBaseApplication extends BaseApplication {
     public static Context getApplicationInstance;
-    private MyBaseApplication baseApplication;
-    private QPOSService pos;
+    private static QPOSService pos;
     public static Handler handler;
-
-    public QPOSService getQposService(){
-        if(pos != null){
-            return pos;
-        }
-        return null;
-    }
-
-    public void setQposService(QPOSService pos){
-      this.pos = pos;
-    }
-
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-    }
+    private static MyBaseApplication instance;
 
     @Override
     public void onCreate() {
         super.onCreate();
         getApplicationInstance = this;
+        instance = this;
         initCrash();
+        // 初始化Fragment缓存
+        FragmentCacheManager.getInstance();
     }
-    public void open(QPOSService.CommunicationMode mode,Context context) {
+
+    // 优化 QPOSService 获取方法
+    public static QPOSService getQposService() {
+        return pos;
+    }
+
+    public void open(QPOSService.CommunicationMode mode, Context context) {
         TRACE.d("open");
        MyQposClass listener = new MyQposClass();
         pos = QPOSService.getInstance(context, mode);
         if (pos == null) {
             return;
         }
+        
         if (mode == QPOSService.CommunicationMode.USB_OTG_CDC_ACM) {
             pos.setUsbSerialDriver(QPOSService.UsbOTGDriver.CDCACM);
         }
         pos.setD20Trade(true);
-
         pos.setContext(this);
-
-        handler = new Handler(Looper.myLooper());
-//        pos.initListener(handler, listener);
         pos.initListener(listener);
-
     }
 
     private void initCrash() {

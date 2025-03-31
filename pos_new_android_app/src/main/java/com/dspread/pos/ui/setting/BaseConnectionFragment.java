@@ -8,16 +8,17 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.dspread.demoui.enums.POS_TYPE;
-import com.dspread.demoui.interfaces.MyCustomQPOSCallback;
-import com.dspread.demoui.manager.QPOSCallbackManager;
-import com.dspread.demoui.ui.setting.connection.USBFragment;
-import com.dspread.demoui.ui.setting.connection.uart.UartFragment;
+import com.dspread.pos.enums.POS_TYPE;
+import com.dspread.pos.interfaces.MyCustomQPOSCallback;
+import com.dspread.pos.manager.QPOSCallbackManager;
+import com.dspread.pos.ui.base.BaseConnectionViewModel;
 import com.dspread.pos.ui.setting.bluetooth.BluetoothFragment;
+import com.dspread.pos.ui.setting.uart.UartFragment;
+import com.dspread.pos.ui.setting.usb.USBFragment;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
 
-public abstract class BaseConnectionFragment<T,VM extends ViewModel> extends BaseFragment implements MyCustomQPOSCallback {
+public abstract class BaseConnectionFragment<T,VM extends BaseConnectionViewModel> extends BaseFragment implements MyCustomQPOSCallback {
     protected VM viewModel;
     private boolean isInitialized = false;
 
@@ -55,6 +56,48 @@ public abstract class BaseConnectionFragment<T,VM extends ViewModel> extends Bas
         return getVariableId();
     }
 
+    @Override
+    public void initViewObservable() {
+        // 观察连接状态变化
+        viewModel.getConnectionStatus().observe(getViewLifecycleOwner(), isConnected -> {
+            // 这里的代码会在主线程执行
+            if (isConnected) {
+                // 处理连接成功的UI逻辑
+                if (viewModel instanceof ConnectionViewModel) {
+                    ConnectionViewModel connectionViewModel = (ConnectionViewModel) viewModel;
+                    POS_TYPE currentType = connectionViewModel.getCurrentPosType();
+                    if (this instanceof BluetoothFragment && (currentType == POS_TYPE.BLUETOOTH || currentType == POS_TYPE.BLUETOOTH_BLE)) {
+                        // 蓝牙连接成功处理
+                        connectionViewModel.onBluetoothConnected(true, connectionViewModel.getBlueTootchName());
+                    } else if (this instanceof UartFragment && currentType == POS_TYPE.UART) {
+                        // UART连接成功处理
+                        connectionViewModel.onUartConnected();
+                    } else if (this instanceof USBFragment && currentType == POS_TYPE.USB) {
+                        // USB连接成功处理
+                        connectionViewModel.onUsbConnected();
+                    }
+                }
+            }else {
+                if (viewModel instanceof ConnectionViewModel) {
+                    ConnectionViewModel connectionViewModel = (ConnectionViewModel) viewModel;
+                    POS_TYPE currentType = connectionViewModel.getCurrentPosType();
+
+                    if (this instanceof BluetoothFragment && (currentType == POS_TYPE.BLUETOOTH || currentType == POS_TYPE.BLUETOOTH_BLE)) {
+                        // 蓝牙连接成功处理
+                        connectionViewModel.onBluetoothConnected(false, null);
+                    } else if (this instanceof UartFragment && currentType == POS_TYPE.UART) {
+                        // UART连接成功处理
+                        connectionViewModel.onDeviceDisconnected(POS_TYPE.UART);
+                    } else if (this instanceof USBFragment && currentType == POS_TYPE.USB) {
+                        // USB连接成功处理
+                        connectionViewModel.onDeviceDisconnected(POS_TYPE.USB);
+                    }
+                }
+            }
+        });
+    }
+
+
 
     @Override
     public void onDestroyView() {
@@ -73,59 +116,17 @@ public abstract class BaseConnectionFragment<T,VM extends ViewModel> extends Bas
 
     @Override
     public void onRequestQposConnected() {
-        if (viewModel instanceof ConnectionViewModel) {
-            ConnectionViewModel connectionViewModel = (ConnectionViewModel) viewModel;
-            POS_TYPE currentType = connectionViewModel.getCurrentPosType();
-            if (this instanceof BluetoothFragment && (currentType == POS_TYPE.BLUETOOTH || currentType == POS_TYPE.BLUETOOTH_BLE)) {
-                // 蓝牙连接成功处理
-                connectionViewModel.onBluetoothConnected(true, connectionViewModel.getBlueTootchName());
-            } else if (this instanceof UartFragment && currentType == POS_TYPE.UART) {
-                // UART连接成功处理
-                connectionViewModel.onUartConnected();
-            } else if (this instanceof USBFragment && currentType == POS_TYPE.USB) {
-                // USB连接成功处理
-                connectionViewModel.onUsbConnected();
-            }
-        }
+        viewModel.setConnected(true);
     }
 
     @Override
     public void onRequestQposDisconnected() {
-        if (viewModel instanceof ConnectionViewModel) {
-            ConnectionViewModel connectionViewModel = (ConnectionViewModel) viewModel;
-
-            POS_TYPE currentType = connectionViewModel.getCurrentPosType();
-
-            if (this instanceof BluetoothFragment && (currentType == POS_TYPE.BLUETOOTH || currentType == POS_TYPE.BLUETOOTH_BLE)) {
-                // 蓝牙连接成功处理
-                connectionViewModel.onBluetoothConnected(false, null);
-            } else if (this instanceof UartFragment && currentType == POS_TYPE.UART) {
-                // UART连接成功处理
-                connectionViewModel.onDeviceDisconnected(POS_TYPE.UART);
-            } else if (this instanceof USBFragment && currentType == POS_TYPE.USB) {
-                // USB连接成功处理
-                connectionViewModel.onDeviceDisconnected(POS_TYPE.USB);
-            }
-        }
+        viewModel.setConnected(false);
     }
 
     @Override
     public void onRequestNoQposDetected() {
-        if (viewModel instanceof ConnectionViewModel) {
-            ConnectionViewModel connectionViewModel = (ConnectionViewModel) viewModel;
-            POS_TYPE currentType = connectionViewModel.getCurrentPosType();
-
-            if (this instanceof BluetoothFragment && (currentType == POS_TYPE.BLUETOOTH || currentType == POS_TYPE.BLUETOOTH_BLE)) {
-                // 蓝牙连接成功处理
-                connectionViewModel.onBluetoothConnected(false, null);
-            } else if (this instanceof UartFragment && currentType == POS_TYPE.UART) {
-                // UART连接成功处理
-                connectionViewModel.onNoDeviceDetected(POS_TYPE.UART);
-            } else if (this instanceof USBFragment && currentType == POS_TYPE.USB) {
-                // USB连接成功处理
-                connectionViewModel.onNoDeviceDetected(POS_TYPE.USB);
-            }
-        }
+        viewModel.setConnected(false);
     }
 
 }

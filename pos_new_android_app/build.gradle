@@ -6,6 +6,35 @@ android {
     namespace 'com.dspread.pos_new_android_app'
     compileSdk 34
 
+    signingConfigs {
+        release {
+            storeFile file('app.keystore')
+            storePassword 'dspread'
+            keyPassword 'dspread'
+            keyAlias 'gundam_wing'
+            /*storeFile file('sys.keystore')
+            storePassword 'dspread'
+            keyPassword 'dspread'
+            keyAlias 'system'*/
+        }
+        debug {
+            storeFile file('app.keystore')
+            storePassword 'dspread'
+            keyPassword 'dspread'
+            keyAlias 'gundam_wing'
+            /*storeFile file('sys.keystore')
+            storePassword 'dspread'
+            keyPassword 'dspread'
+            keyAlias 'system'*/
+        }
+        config {
+            keyAlias 'key0'
+            keyPassword '123789'
+            storeFile file('dspread.jks')
+            storePassword '123789'
+        }
+    }
+
     defaultConfig {
         applicationId "com.dspread.pos_new_android_app"
         minSdk 24
@@ -44,10 +73,10 @@ dependencies {
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.25'
 
     implementation 'com.dspread.print:dspread_print_sdk:1.4.0-beta'
-    implementation 'com.dspread.library:dspread_pos_sdk:7.1.2'
+//    implementation 'com.dspread.library:dspread_pos_sdk:7.1.2'
 
     implementation project(':mvvmhabit')
-//    api files('libs/mvvmhabit-release.aar')
+    api files('libs/dspread_pos_sdk_7.1.3_beta.jar')
 //    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     api rootProject.ext.dependencies["lifecycle-extensions"]
     annotationProcessor rootProject.ext.dependencies["lifecycle-compiler"]
@@ -71,11 +100,14 @@ dependencies {
     api(rootProject.ext.dependencies["bindingcollectionadapter-viewpager2"]) {
         exclude group: 'com.android.support'
     }
-    //rx管理View的生命周期
-    api(rootProject.ext.dependencies.rxlifecycle) {
-        exclude group: 'com.android.support'
-    }
-    api(rootProject.ext.dependencies["rxlifecycle-components"]) {
-        exclude group: 'com.android.support'
-    }
+
+    api rootProject.ext.dependencies.rxjava
+    api rootProject.ext.dependencies.rxandroid
+    //network
+    api rootProject.ext.dependencies.okhttp
+    api rootProject.ext.dependencies.retrofit
+    api rootProject.ext.dependencies["converter-gson"]
+    api rootProject.ext.dependencies["adapter-rxjava"]
+
+
 }
