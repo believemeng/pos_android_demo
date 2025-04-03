@@ -20,7 +20,11 @@ import java.util.List;
 public class MyQposClass extends CQPOSService {
     private final QPOSCallbackManager callbackManager = QPOSCallbackManager.getInstance();
 
-
+    @CallbackChange(
+        version = "2.0.0",
+        description = "新增支持多回调监听机制，使用 QPOSCallbackManager 进行回调管理",
+        type = CallbackChange.ChangeType.MODIFIED
+    )
     @Override
     public void onDoTradeResult(QPOSService.DoTradeResult result, Hashtable<String, String> decodeData) {
         MyCustomQPOSCallback callback = callbackManager.getCallback(MyCustomQPOSCallback.class);
@@ -29,9 +33,13 @@ public class MyQposClass extends CQPOSService {
         }
     }
 
+    @CallbackChange(
+        version = "2.0.0",
+        description = "错误回调现在会通知所有注册的监听器",
+        type = CallbackChange.ChangeType.MODIFIED
+    )
     @Override
     public void onError(QPOSService.Error errorState) {
-        // 所有注册的回调都会收到错误通知
         for (BaseQPOSCallback callback : callbackManager.callbackMap.values()) {
             callback.onError(errorState);
         }

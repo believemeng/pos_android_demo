@@ -9,15 +9,14 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.navigation.Navigation;
 
 import com.dspread.pos.base.BaseFragment;
+import com.dspread.pos.enums.PaymentType;
 import com.dspread.pos.ui.base.TitleProvider;
 import com.dspread.pos.ui.payment.PaymentActivity;
 import com.dspread.pos_new_android_app.BR;
 import com.dspread.pos_new_android_app.R;
 import com.dspread.pos_new_android_app.databinding.FragmentHomeBinding;
-import com.dspread.pos_new_android_app.databinding.FragmentInputMoney1Binding;
 
 
 public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewModel> implements TitleProvider {

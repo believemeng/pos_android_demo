@@ -91,7 +91,6 @@ public class BluetoothFragment extends BaseConnectionFragment<FragmentBluetoothB
         }
 
         tBtnClicked = button;
-//        button.setChecked(false); // Initially set to unchecked
         viewModel.observableList.clear();
         viewModel.setCurrentPosType(newType);
         viewModel.scanBluetooth(newType);

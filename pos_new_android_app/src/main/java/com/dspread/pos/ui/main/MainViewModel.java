@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.dspread.pos.manager.FragmentCacheManager;
 import com.dspread.pos.ui.base.TitleProvider;
 import com.dspread.pos.ui.home.HomeFragment;
+import com.dspread.pos.ui.scan.ScanFragment;
 import com.dspread.pos.ui.setting.ViewPagerGroupFragment;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_new_android_app.R;
@@ -102,9 +103,8 @@ public class MainViewModel extends BaseViewModel {
 //            case R.id.nav_printer:
 //                fragmentIndex = 1;
 //                break;
-//            case R.id.nav_scan:
-//                fragmentIndex = 2;
-//                break;
+            case R.id.nav_scan:
+                return new ScanFragment();
 //            case R.id.nav_deviceinfo:
 //                fragmentIndex = 2;
 //                break;

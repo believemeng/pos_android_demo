@@ -518,4 +518,6 @@
     <string name="devices" translatable="false">Available devices</string>
     <string name="connection_method" translatable="false">Connection method</string>
     <string name="connect" translatable="false">Connect</string>
+    <string name="start_scan">Start Scan</string>
+
 </resources>

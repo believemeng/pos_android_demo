@@ -1,11 +1,17 @@
 package com.dspread.pos.utils;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 
+import androidx.annotation.RequiresApi;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Locale;
 
 /**
@@ -121,5 +127,36 @@ public class DeviceUtils {
             return code;
         }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public static Context getGlobalApplicationContext() {
+        try {
+            Class<?> activityThreadClass = Class.forName("android.app.ActivityThread");
+            Method currentActivityThreadMethod = activityThreadClass.getDeclaredMethod("currentActivityThread");
+            currentActivityThreadMethod.setAccessible(true);
+            Object activityThread = currentActivityThreadMethod.invoke(null);
+            Field mInitialApplicationField = activityThreadClass.getDeclaredField("mInitialApplication");
+            mInitialApplicationField.setAccessible(true);
+            Application application = (Application) mInitialApplicationField.get(activityThread);
+            return application.getApplicationContext();
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException
+                 | InvocationTargetException | NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static boolean isAppInstalled(Context context, String packageName) {
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
+            TRACE.d("[PrinterManager] isAppInstalled ");
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            TRACE.d("not found pacakge == " + e.toString());
+            return false;
+        }
+    }
+
+    public static final String UART_AIDL_SERVICE_APP_PACKAGE_NAME = "com.dspread.sdkservice";//新架构的service包名
 
 }
