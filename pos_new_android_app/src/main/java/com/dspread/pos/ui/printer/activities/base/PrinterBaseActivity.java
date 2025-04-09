@@ -8,6 +8,7 @@ import com.dspread.pos.ui.printer.printeractivity.PrinterAlertDialog;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos_new_android_app.BR;
 import com.dspread.pos_new_android_app.R;
+import com.dspread.pos_new_android_app.databinding.ActivityPrinterBaseBinding;
 import com.dspread.print.device.PrintListener;
 import com.dspread.print.device.PrinterDevice;
 import com.dspread.print.device.PrinterInitListener;
@@ -15,7 +16,7 @@ import com.dspread.print.device.PrinterManager;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 
-public abstract class PrinterBaseActivity<V extends ViewDataBinding, VM extends BasePrinterViewModel> extends BaseActivity<V, VM> {
+public abstract class PrinterBaseActivity<V extends ViewDataBinding, VM extends BasePrinterViewModel> extends BaseActivity<ActivityPrinterBaseBinding, VM> {
     protected PrinterDevice mPrinter;
 
     @Override
@@ -44,6 +45,9 @@ public abstract class PrinterBaseActivity<V extends ViewDataBinding, VM extends 
         initPrinter();
         MyPrinterListener myPrinterListener = new MyPrinterListener();
         mPrinter.setPrintListener(myPrinterListener);
+
+        // 设置返回按钮点击事件
+        binding.toolbar.setNavigationOnClickListener(v -> finish());
     }
 
     private void initPrinter() {

@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.dspread.pos.manager.FragmentCacheManager;
 import com.dspread.pos.ui.base.TitleProvider;
 import com.dspread.pos.ui.home.HomeFragment;
+import com.dspread.pos.ui.printer.PrinterHelperFragment;
 import com.dspread.pos.ui.scan.ScanFragment;
 import com.dspread.pos.ui.setting.ViewPagerGroupFragment;
 import com.dspread.pos.utils.TRACE;
@@ -100,9 +101,8 @@ public class MainViewModel extends BaseViewModel {
                 return new HomeFragment();
             case R.id.nav_setting:
                 return new ViewPagerGroupFragment();
-//            case R.id.nav_printer:
-//                fragmentIndex = 1;
-//                break;
+            case R.id.nav_printer:
+                return new PrinterHelperFragment();
             case R.id.nav_scan:
                 return new ScanFragment();
 //            case R.id.nav_deviceinfo:

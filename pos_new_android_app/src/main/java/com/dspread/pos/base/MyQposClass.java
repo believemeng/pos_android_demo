@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.util.Log;
 
+import com.dspread.pos.annotations.CallbackChange;
 import com.dspread.pos.interfaces.BaseQPOSCallback;
 import com.dspread.pos.interfaces.MyCustomQPOSCallback;
 import com.dspread.pos.manager.QPOSCallbackManager;
@@ -21,8 +22,7 @@ public class MyQposClass extends CQPOSService {
     private final QPOSCallbackManager callbackManager = QPOSCallbackManager.getInstance();
 
     @CallbackChange(
-        version = "2.0.0",
-        description = "新增支持多回调监听机制，使用 QPOSCallbackManager 进行回调管理",
+        description = "The callback is in child thread",
         type = CallbackChange.ChangeType.MODIFIED
     )
     @Override
@@ -34,7 +34,6 @@ public class MyQposClass extends CQPOSService {
     }
 
     @CallbackChange(
-        version = "2.0.0",
         description = "错误回调现在会通知所有注册的监听器",
         type = CallbackChange.ChangeType.MODIFIED
     )

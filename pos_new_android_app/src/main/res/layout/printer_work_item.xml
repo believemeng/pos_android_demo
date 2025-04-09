@@ -7,9 +7,7 @@
         <variable
             name="item"
             type="com.dspread.pos.ui.printer.PrinterItemViewModel" />
-        <variable
-            name="viewModel"
-            type="com.dspread.pos.ui.printer.PrinterViewModel" />
+
     </data>
 
     <androidx.cardview.widget.CardView
@@ -18,7 +16,7 @@
         android:layout_margin="8dp"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
-        binding:onClickCommand="@{() -> viewModel.itemClickCommand.execute(item)}">
+        binding:onClickCommand="@{item.itemClick}">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,6 +26,7 @@
             android:padding="16dp">
 
             <ImageView
+                android:id="@+id/item_icon"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:src="@{item.iconResId}" />

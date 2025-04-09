@@ -19,7 +19,17 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_constraintTop_toTopOf="parent"
-            app:title="@{viewModel.title}" />
+            app:navigationIcon="@mipmap/left"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@{viewModel.title}"
+                android:textColor="?attr/colorOnPrimary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </com.google.android.material.appbar.MaterialToolbar>
 
         <FrameLayout
             android:id="@+id/content_container"
@@ -35,6 +45,7 @@
             android:layout_margin="16dp"
             android:padding="14dp"
             android:text="Print"
+            android:background="@drawable/rounded_button"
             app:layout_constraintBottom_toBottomOf="parent"
             binding:onClickCommand="@{viewModel.printCommand}" />
 

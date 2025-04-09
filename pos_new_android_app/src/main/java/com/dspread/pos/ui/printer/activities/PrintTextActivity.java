@@ -18,16 +18,17 @@ public class PrintTextActivity extends PrinterBaseActivity<ActivityPrinterBaseBi
     @Override
     public void initData() {
         super.initData();
-        // 加载内容布局并获取其binding
+//         加载内容布局并获取其binding
         contentBinding = ActivityPrintTextBinding.inflate(getLayoutInflater());
         contentBinding.setViewModel(viewModel);
         // 将内容添加到容器中
         binding.contentContainer.addView(contentBinding.getRoot());
+        viewModel.title.set("Print Text");
     }
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
-        return R.layout.activity_print_text;
+        return R.layout.activity_printer_base;
     }
 
     @Override
