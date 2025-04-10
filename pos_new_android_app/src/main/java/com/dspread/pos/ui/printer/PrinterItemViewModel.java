@@ -18,7 +18,6 @@ public class PrinterItemViewModel extends ItemViewModel<PrinterViewModel> {
     public final Class<? extends Activity> activityClass;
 
     public ObservableField<String> title = new ObservableField<>();
-    public ObservableField<Integer> icon = new ObservableField<>();
 
     // 添加点击命令
     public BindingCommand itemClick = new BindingCommand(() -> {

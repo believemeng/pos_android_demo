@@ -2,6 +2,7 @@ package com.dspread.pos.ui.printer.activities;
 
 import android.app.Application;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -10,7 +11,10 @@ import androidx.databinding.ObservableField;
 import com.action.printerservice.barcode.Barcode1D;
 import com.dspread.pos.ui.printer.activities.base.BasePrinterViewModel;
 import com.dspread.pos.ui.printer.activities.base.PrintDialog;
+import com.dspread.pos.utils.QRCodeUtil;
 import com.dspread.pos_new_android_app.R;
+import com.dspread.print.device.bean.PrintLineStyle;
+import com.dspread.print.widget.PrintLine;
 
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
@@ -30,6 +34,10 @@ public class BarCodeViewModel extends BasePrinterViewModel {
     public SingleLiveEvent<String[]> showOptionsDialog = new SingleLiveEvent<>();
     public SingleLiveEvent<Boolean> showHeightDialog = new SingleLiveEvent<>();
     public SingleLiveEvent<Boolean> showWidthDialog = new SingleLiveEvent<>();
+    public SingleLiveEvent<String[]> showAlignDialog = new SingleLiveEvent<>();
+    public SingleLiveEvent<String[]> showGrayLevelDialog = new SingleLiveEvent<>();
+    public SingleLiveEvent<String[]> showSpeedLevelDialog = new SingleLiveEvent<>();
+    public SingleLiveEvent<String[]> showDensityLevelDialog = new SingleLiveEvent<>();
 
     public BindingCommand onContentClick = new BindingCommand(() -> {
         // 显示内容输入对话框
@@ -51,22 +59,64 @@ public class BarCodeViewModel extends BasePrinterViewModel {
 
     });
 
+    public BindingCommand onAlignClick = new BindingCommand(() -> {
+        String[] alignOptions = new String[]{
+                getApplication().getString(R.string.at_the_left),
+                getApplication().getString(R.string.at_the_right),
+                getApplication().getString(R.string.at_the_center)
+        };
+        showAlignDialog.setValue(alignOptions);
+    });
+
+    public BindingCommand onGrayLevelClick = new BindingCommand(() -> {
+        String[] graylevel = new String[]{"1", "2", "3", "4", "5"};
+        showGrayLevelDialog.setValue(graylevel);
+    });
+
+    public BindingCommand onSpeedLevelClick = new BindingCommand(() -> {
+        String[] speedLevel = new String[]{"1", "2", "3", "4", "5"};
+        showSpeedLevelDialog.setValue(speedLevel);
+    });
+
+    public BindingCommand onDensityLevelClick = new BindingCommand(() -> {
+        String[] densitylevel = new String[]{"1", "2", "3", "4", "5"};
+        showDensityLevelDialog.setValue(densitylevel);
+    });
+
     public BarCodeViewModel(@NonNull Application application) {
         super(application);
     }
 
     @Override
     protected void doPrint() {
-//        try {
-//            // 实现条形码打印逻辑
-//            getPrinter().printBarCode(content.get(),
-//                Integer.parseInt(height.get()),
-//                Integer.parseInt(width.get()),
-//                align.get());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            onPrintComplete(false, e.getMessage());
-//        }
+        try {
+            PrintLineStyle style = new PrintLineStyle();
+            int printLineAlign = 0;
+            switch (align.get()) {
+                case "LEFT":
+                    printLineAlign = PrintLine.LEFT;
+                    break;
+                case "RIGHT":
+                    printLineAlign = PrintLine.RIGHT;
+                    break;
+                case "CENTER":
+                    printLineAlign = PrintLine.CENTER;
+                    break;
+            }
+
+            Bitmap bitmap = QRCodeUtil.getBarCodeBM(content.get(),Integer.parseInt(width.get()), Integer.parseInt(height.get()));
+            generateBarcode(bitmap);
+            if ("mp600".equals(Build.MODEL)) {
+                getPrinter().setPrinterSpeed(Integer.parseInt(speedLevel.get()));
+                getPrinter().setPrinterDensity(Integer.parseInt(densityLevel.get()));
+            }
+            getPrinter().setPrintStyle(style);
+            getPrinter().setFooter(30);
+            getPrinter().printBarCode(getApplication(), symbology.get(), Integer.parseInt(width.get()), Integer.parseInt(height.get()), content.get(), printLineAlign);
+        } catch (Exception e) {
+            e.printStackTrace();
+            onPrintComplete(false, e.getMessage());
+        }
     }
     
     public void generateBarcode(Bitmap bitmap) {

@@ -105,25 +105,6 @@ public class MainViewModel extends BaseViewModel {
                 return new PrinterHelperFragment();
             case R.id.nav_scan:
                 return new ScanFragment();
-//            case R.id.nav_deviceinfo:
-//                fragmentIndex = 2;
-//                break;
-//            case R.id.nav_deviceupdate:
-//                fragmentIndex = 3;
-//                break;
-//            case R.id.nav_about:
-//                fragmentIndex = 4;
-//                break;
-//            case R.id.nav_log:
-//                fragmentIndex = 5;
-//                break;
-
-//            case R.id.nav_mifareCards:
-//                fragmentIndex = 8;
-//                break;
-//            case R.id.nav_exit:
-//                fragmentIndex = 9;
-//                break;
         }
 
         return null;

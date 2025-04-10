@@ -35,6 +35,7 @@
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackground"
                     android:padding="16dp"
+                    android:gravity="center_vertical"
                     binding:onClickCommand="@{viewModel.onAlignClick}">
 
                     <TextView
@@ -46,11 +47,8 @@
                         android:textSize="16sp" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:text="@{viewModel.alignText}"
-                        android:textColor="@color/colorAccent"
-                        android:drawableEnd="@mipmap/lift_arrow"/>
+                        style="@style/TextviewPrint"/>
                 </LinearLayout>
 
                 <View
@@ -60,6 +58,7 @@
 
                 <!-- 字体样式设置 -->
                 <LinearLayout
+                    android:gravity="center_vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackground"
@@ -75,11 +74,9 @@
                         android:textSize="16sp" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/TextviewPrint"
                         android:text="@{viewModel.fontStyle}"
-                        android:textColor="@color/colorAccent"
-                        android:drawableEnd="@mipmap/lift_arrow"/>
+                        />
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
@@ -92,6 +89,7 @@
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackground"
                     android:padding="16dp"
+                    android:gravity="center_vertical"
                     binding:onClickCommand="@{viewModel.onFontSizeClick}">
 
                     <TextView
@@ -104,11 +102,8 @@
 
                     <TextView
                         android:id="@+id/txt_size"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{viewModel.textSize}"
-                        android:textColor="@color/colorAccent"
-                        android:drawableEnd="@mipmap/lift_arrow"/>
+                        style="@style/TextviewPrint"
+                        android:text="@{viewModel.textSize}" />
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
@@ -121,6 +116,7 @@
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackground"
                     android:padding="16dp"
+                    android:gravity="center_vertical"
                     binding:onClickCommand="@{viewModel.onMaxHeightClick}">
 
                     <TextView
@@ -133,11 +129,9 @@
 
                     <TextView
                         android:id="@+id/txt_maxheight"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/TextviewPrint"
                         android:text="@{viewModel.maxHeight}"
-                        android:textColor="@color/colorAccent"
-                        android:drawableEnd="@mipmap/lift_arrow"/>
+                        />
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -154,9 +148,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="top"
-                android:hint="@string/text_print"
+                android:hint="@string/print_content"
                 android:inputType="textMultiLine"
-                android:text="@={viewModel.printContent}" />
+                android:text="@{viewModel.printContent}" />
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>

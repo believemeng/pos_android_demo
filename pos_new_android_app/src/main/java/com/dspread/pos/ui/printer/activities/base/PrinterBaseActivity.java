@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import androidx.databinding.ViewDataBinding;
 
-import com.dspread.pos.ui.printer.printeractivity.PrinterAlertDialog;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos_new_android_app.BR;
 import com.dspread.pos_new_android_app.R;
@@ -72,6 +71,14 @@ public abstract class PrinterBaseActivity<V extends ViewDataBinding, VM extends 
         @Override
         public void printResult(boolean b, String s, PrinterDevice.ResultType resultType) {
             onReturnPrintResult(b, s, resultType);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mPrinter != null) {
+            mPrinter.close();
         }
     }
 }

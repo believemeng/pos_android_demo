@@ -35,6 +35,24 @@
         <activity
             android:name="com.dspread.pos.ui.printer.activities.base.PrinterBaseActivity"
             android:exported="false" />
+        <activity
+            android:name="com.dspread.pos.ui.printer.activities.BarCodeActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.dspread.pos.ui.printer.activities.QRCodeActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.dspread.pos.ui.printer.activities.BitmapActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.dspread.pos.ui.printer.activities.PrintFunctionMultiActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.dspread.pos.ui.printer.activities.PrintTicketActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.dspread.pos.ui.printer.activities.PrinterStatusActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

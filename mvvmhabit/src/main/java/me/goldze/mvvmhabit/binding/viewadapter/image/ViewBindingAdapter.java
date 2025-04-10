@@ -24,4 +24,11 @@ public class ViewBindingAdapter {
             view.setImageBitmap(bitmap.get());
         }
     }
+
+    @BindingAdapter("android:src")
+    public static void setImageResource(ImageView view, int resId) {
+        if (resId != 0) {
+            view.setImageResource(resId);
+        }
+    }
 }

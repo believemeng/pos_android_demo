@@ -19,7 +19,7 @@ public class PrintTextViewModel extends BasePrinterViewModel {
     public ObservableField<String> fontStyle = new ObservableField<>("NORMAL");
     public ObservableField<String> textSize = new ObservableField<>("24");
     public ObservableField<String> maxHeight = new ObservableField<>("100");
-    public ObservableField<String> printContent = new ObservableField<>("");
+    public ObservableField<String> printContent = new ObservableField<>(getApplication().getString(R.string.text_print));
     public SingleLiveEvent<String[]> showAlignDialog = new SingleLiveEvent<>();
     public SingleLiveEvent<String[]> showFontStyleDialog = new SingleLiveEvent<>();
     public SingleLiveEvent<String> showTextSizeDialog = new SingleLiveEvent<>();
@@ -95,6 +95,7 @@ public class PrintTextViewModel extends BasePrinterViewModel {
             switch (fontStyle.get()) {
                 case "NORMAL":
                     style.setFontStyle(PrintStyle.FontStyle.NORMAL);
+                    style.setFontStyle(PrintStyle.Key.ALIGNMENT);
                     break;
                 case "BOLD":
                     style.setFontStyle(PrintStyle.FontStyle.BOLD);

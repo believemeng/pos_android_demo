@@ -459,6 +459,7 @@
     <string name="at_the_left">LEFT</string>
     <string name="at_the_right">RIGHT</string>
     <string name="at_the_center">CENTER</string>
+    <string name="print_content">Print Content</string>
 
     <string name="fontStyle_normal">NORMAL</string>
     <string name="fontStyle_bold">BOLD</string>

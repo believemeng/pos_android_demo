@@ -1,4 +1,4 @@
-package com.dspread.pos.ui.printer.printeractivity;
+package com.dspread.pos.ui.printer.activities.base;
 
 import android.app.AlertDialog;
 import android.content.Context;

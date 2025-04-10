@@ -29,10 +29,7 @@
 
                 <!-- 条形码内容 -->
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:padding="16dp"
+                    style="@style/LinearLayoutStyle"
                     binding:onClickCommand="@{viewModel.onContentClick}">
 
                     <TextView
@@ -43,11 +40,9 @@
                         android:textSize="16sp" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/TextviewPrint"
                         android:text="@{viewModel.content}"
-                        android:drawableEnd="@mipmap/lift_arrow"
-                        android:textColor="@color/colorAccent" />
+                        />
                 </LinearLayout>
 
                 <View
@@ -57,10 +52,7 @@
 
                 <!-- 码制选择 -->
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:padding="16dp"
+                    style="@style/LinearLayoutStyle"
                     binding:onClickCommand="@{viewModel.onSymbologyClick}">
 
                     <TextView
@@ -71,11 +63,9 @@
                         android:textSize="16sp" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/TextviewPrint"
                         android:text="@{viewModel.symbology}"
-                        android:drawableEnd="@mipmap/lift_arrow"
-                        android:textColor="@color/colorAccent" />
+                        />
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
@@ -84,10 +74,7 @@
 
                 <!-- height -->
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:padding="16dp"
+                    style="@style/LinearLayoutStyle"
                     binding:onClickCommand="@{viewModel.onHeightClick}">
 
                     <TextView
@@ -99,11 +86,9 @@
 
                     <TextView
                         android:id="@+id/txt_height"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/TextviewPrint"
                         android:text="@{viewModel.height}"
-                        android:textColor="@color/colorAccent"
-                        android:drawableEnd="@mipmap/lift_arrow"/>
+                        />
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
@@ -112,10 +97,7 @@
 
                 <!-- width -->
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:padding="16dp"
+                    style="@style/LinearLayoutStyle"
                     binding:onClickCommand="@{viewModel.onWidthClick}">
 
                     <TextView
@@ -127,24 +109,19 @@
 
                     <TextView
                         android:id="@+id/txt_width"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/TextviewPrint"
                         android:text="@{viewModel.width}"
-                        android:textColor="@color/colorAccent"
-                        android:drawableEnd="@mipmap/lift_arrow"/>
+                        />
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/gray" />
 
-                <!-- height -->
+                <!-- align -->
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:padding="16dp"
-                    binding:onClickCommand="@{viewModel.onSymbologyClick}">
+                    style="@style/LinearLayoutStyle"
+                    binding:onClickCommand="@{viewModel.onAlignClick}">
 
                     <TextView
                         android:layout_width="0dp"
@@ -154,24 +131,18 @@
                         android:textSize="16sp" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{viewModel.symbology}"
-                        android:textColor="@color/colorAccent"
-                        android:drawableEnd="@mipmap/lift_arrow"/>
+                        style="@style/TextviewPrint"
+                        android:text="@{viewModel.align}" />
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/gray" />
 
-                <!-- height -->
+                <!-- grayLevel -->
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:padding="16dp"
-                    binding:onClickCommand="@{viewModel.onSymbologyClick}">
+                    style="@style/LinearLayoutStyle"
+                    binding:onClickCommand="@{viewModel.onGrayLevelClick}">
 
                     <TextView
                         android:layout_width="0dp"
@@ -181,24 +152,20 @@
                         android:textSize="16sp" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{viewModel.symbology}"
-                        android:textColor="@color/colorAccent"
-                        android:drawableEnd="@mipmap/lift_arrow"/>
+                        style="@style/TextviewPrint"
+                        android:text="@{viewModel.grayLevel}"
+                        />
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/gray" />
 
-                <!-- height -->
+                <!-- speedLevel -->
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:padding="16dp"
-                    binding:onClickCommand="@{viewModel.onSymbologyClick}">
+                    android:id="@+id/lin_sleed_level"
+                    style="@style/LinearLayoutStyle"
+                    binding:onClickCommand="@{viewModel.onSpeedLevelClick}">
 
                     <TextView
                         android:layout_width="0dp"
@@ -208,24 +175,19 @@
                         android:textSize="16sp" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{viewModel.symbology}"
-                        android:textColor="@color/colorAccent"
-                        android:drawableEnd="@mipmap/lift_arrow"/>
+                        style="@style/TextviewPrint"
+                        android:text="@{viewModel.speedLevel}" />
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/gray" />
 
-                <!-- height -->
+                <!-- densityLevel -->
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:padding="16dp"
-                    binding:onClickCommand="@{viewModel.onSymbologyClick}">
+                    android:id="@+id/lin_density_level"
+                    style="@style/LinearLayoutStyle"
+                    binding:onClickCommand="@{viewModel.onDensityLevelClick}">
 
                     <TextView
                         android:layout_width="0dp"
@@ -235,11 +197,8 @@
                         android:textSize="16sp" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{viewModel.symbology}"
-                        android:textColor="@color/colorAccent"
-                        android:drawableEnd="@mipmap/lift_arrow"/>
+                        style="@style/TextviewPrint"
+                        android:text="@{viewModel.densityLevel}" />
                 </LinearLayout>
 
                 <!-- ... 其他设置项（高度、宽度、对齐等）使用相同的布局模式 ... -->
