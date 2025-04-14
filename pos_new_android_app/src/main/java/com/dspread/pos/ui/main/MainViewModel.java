@@ -1,6 +1,7 @@
 package com.dspread.pos.ui.main;
 
 import android.app.Application;
+import android.os.Build;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -8,19 +9,23 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.dspread.pos.MyBaseApplication;
 import com.dspread.pos.manager.FragmentCacheManager;
 import com.dspread.pos.ui.base.TitleProvider;
 import com.dspread.pos.ui.home.HomeFragment;
 import com.dspread.pos.ui.printer.PrinterHelperFragment;
 import com.dspread.pos.ui.scan.ScanFragment;
 import com.dspread.pos.ui.setting.ViewPagerGroupFragment;
+import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_new_android_app.R;
+import com.dspread.xpos.QPOSService;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.goldze.mvvmhabit.base.BaseApplication;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.binding.command.BindingConsumer;
@@ -36,6 +41,8 @@ public class MainViewModel extends BaseViewModel {
 
     private WeakReference<MainActivity> activityRef;
     private Fragment currentFragment;
+    private MyBaseApplication myBaseApplication;
+    private QPOSService pos;
 
     public MainViewModel(@NonNull Application application, MainActivity activity) {
         super(application);
@@ -43,8 +50,20 @@ public class MainViewModel extends BaseViewModel {
         this.activityRef = new WeakReference<>(activity);
         this.activity = activity;
 //        initFragments();
+        if(myBaseApplication == null){
+            myBaseApplication = (MyBaseApplication) BaseApplication.getInstance();
+        }
+        openDevice();
     }
 
+    private void openDevice(){
+        if(DeviceUtils.isSmartDevices()){
+            myBaseApplication.open(QPOSService.CommunicationMode.UART, getApplication());
+            pos = myBaseApplication.getQposService();
+            pos.setDeviceAddress("/dev/ttyS1");
+            pos.openUart();
+        }
+    }
 
     public BindingCommand<View> onDrawerOpenedCommand = new BindingCommand<>(new BindingConsumer<View>() {
 

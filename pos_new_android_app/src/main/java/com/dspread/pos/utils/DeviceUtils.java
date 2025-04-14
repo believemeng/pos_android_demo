@@ -112,6 +112,13 @@ public class DeviceUtils {
         }
 
 
+        public static boolean isSmartDevices(){
+            if("D20".equals(Build.MODEL)||"D30".equals(Build.MODEL)||"D50".equals(Build.MODEL) ||"D60".equals(Build.MODEL)
+                    ||"D70".equals(Build.MODEL)||"D30M".equals(Build.MODEL)||"S10".equals(Build.MODEL)){
+                return true;
+            }
+            return false;
+        }
         /**
          * 获取手机厂商名
          * HuaWei
