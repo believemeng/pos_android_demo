@@ -53,10 +53,9 @@ public class MainViewModel extends BaseViewModel {
         if(myBaseApplication == null){
             myBaseApplication = (MyBaseApplication) BaseApplication.getInstance();
         }
-        openDevice();
     }
 
-    private void openDevice(){
+    public void openDevice(){
         if(DeviceUtils.isSmartDevices()){
             myBaseApplication.open(QPOSService.CommunicationMode.UART, getApplication());
             pos = myBaseApplication.getQposService();

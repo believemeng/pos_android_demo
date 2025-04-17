@@ -68,7 +68,11 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         Intent intent = getIntent();
         if (intent != null) {
             amount = intent.getStringExtra("amount");
-            transactionTypeString = intent.getStringExtra("transType");
+            if(SPUtils.getInstance().getString("transType") != null && !"".equals(SPUtils.getInstance().getString("transType"))){
+                transactionTypeString = SPUtils.getInstance().getString("transType");
+            }else {
+                transactionTypeString = "GOODS";
+            }
             cashbackAmounts = intent.getStringExtra("cashbackAmounts");
             viewModel.setAmount(amount);
         }

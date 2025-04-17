@@ -27,6 +27,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 
+import com.dspread.pos.interfaces.MyCustomQPOSCallback;
+import com.dspread.pos.manager.QPOSCallbackManager;
 import com.dspread.pos.ui.base.TitleProvider;
 import com.dspread.pos.utils.DevUtils;
 import com.dspread.pos.utils.TRACE;
@@ -39,8 +41,9 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.utils.SPUtils;
 
-public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewModel> {
+public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewModel> implements MyCustomQPOSCallback{
 
     public void setToolbarTitle(String title) {
         if (toolbar != null) {
@@ -82,9 +85,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     @Override
     public void initData() {
         super.initData();
-        // 获取 NavController
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.nav_host_fragment);
+//        // 获取 NavController
+//        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+//                .findFragmentById(R.id.nav_host_fragment);
+        QPOSCallbackManager.getInstance().registerCallback(MyCustomQPOSCallback.class, this);
         if (navController != null) {
             // 设置预加载数量
             navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
@@ -109,6 +113,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+        viewModel.openDevice();
     }
 
     @Override
@@ -140,7 +145,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        QPOSCallbackManager.getInstance().unregisterCallback(MyCustomQPOSCallback.class);
     }
 
     @Override
@@ -234,6 +239,11 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         }
     }
 
+    @Override
+    public void onRequestQposConnected() {
+        MyCustomQPOSCallback.super.onRequestQposConnected();
+        SPUtils.getInstance().put("isConnected",true);
+    }
 }
 
 

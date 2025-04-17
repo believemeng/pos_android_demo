@@ -58,9 +58,9 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
             if (!canshow) return;
             canshow = false;
             showTimer.start();
-            showPaymentTypeDialog(inputMoney);
-//            MyBaseApplication.getApplicationInstance = getActivity();
-//            Mydialog.payTypeDialog(getActivity(), "", inputMoney, PaymentType.getValues());
+            Intent intent = new Intent(getActivity(), PaymentActivity.class);
+            intent.putExtra("amount", String.valueOf(inputMoney));
+            startActivity(intent);
         });
     }
 
@@ -70,27 +70,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 //            keyboardUtil.getmOnKeyboardActionListener().onKey(keyCode, null);
         }
         return true;
-    }
-
-    private void showPaymentTypeDialog(long amount) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.HalfScreenDialog);
-        builder.setItems(PaymentType.getValues(), (dialog, which) -> {
-            String selectedType = PaymentType.getValues()[which];
-            // 使用 Intent 启动 PaymentActivity
-            Intent intent = new Intent(getActivity(), PaymentActivity.class);
-            intent.putExtra("amount", String.valueOf(amount));
-            intent.putExtra("transType", selectedType);
-            startActivity(intent);
-        });
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setGravity(Gravity.BOTTOM);
-            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, 
-                    getResources().getDisplayMetrics().heightPixels / 2);
-        }
     }
     
     @Override

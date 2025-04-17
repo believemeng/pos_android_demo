@@ -70,6 +70,9 @@ public class ConnectionViewModel extends BaseConnectionViewModel {
             myBaseApplication = (MyBaseApplication) BaseApplication.getInstance();
         }
         spUtils = SPUtils.getInstance();
+        if(spUtils.getBoolean("isConnected")){
+            onUartConnected();
+        }
     }
 
     public void initData() {
@@ -168,6 +171,7 @@ public class ConnectionViewModel extends BaseConnectionViewModel {
             }
         }
     });
+
 
     public void close(POS_TYPE posType) {
         TRACE.d("start close");
@@ -284,19 +288,20 @@ public class ConnectionViewModel extends BaseConnectionViewModel {
         uartSwitchChecked.set(true);
         isConnected.set(true);
         uartConnectionStatus.set("Connected Successfully!");
-        SPUtils.getInstance().put("ConnectionType",POS_TYPE.UART.name());
+        spUtils.put("ConnectionType",POS_TYPE.UART.name());
         ToastUtils.showShort("Uart has been connected!");
     }
 
     public void onUsbConnected() {
         isUSBConnected.set(true);
-        SPUtils.getInstance().put("ConnectionType",POS_TYPE.USB.name());
+        spUtils.put("ConnectionType",POS_TYPE.USB.name());
         usbConnectionStatus.set("Connected Successfully!");
     }
 
     public void onDeviceDisconnected(POS_TYPE posType) {
         TRACE.d("disconnect = "+posType);
-        SPUtils.getInstance().put("ConnectionType","");
+        spUtils.put("isConnected",false);
+        spUtils.put("ConnectionType","");
         if(posType == POS_TYPE.UART){
             ToastUtils.showShort("Uart has been disconnected!");
             uartConnectionStatus.set("Connected Failed!");
