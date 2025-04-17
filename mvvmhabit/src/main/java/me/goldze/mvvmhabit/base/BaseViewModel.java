@@ -40,7 +40,7 @@ public class BaseViewModel<M extends BaseModel> extends AndroidViewModel impleme
         mCompositeDisposable = new CompositeDisposable();
     }
 
-    protected void addSubscribe(Disposable disposable) {
+    public void addSubscribe(Disposable disposable) {
         if (mCompositeDisposable == null) {
             mCompositeDisposable = new CompositeDisposable();
         }

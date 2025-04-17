@@ -16,6 +16,7 @@
 
 package me.goldze.mvvmhabit.crash;
 
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ClipData;
@@ -23,6 +24,7 @@ import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
@@ -33,11 +35,27 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import me.goldze.mvvmhabit.R;
+import me.goldze.mvvmhabit.http.BaseResponse;
+import me.goldze.mvvmhabit.utils.ToastUtils;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 
 public final class DefaultErrorActivity extends AppCompatActivity {
-
+    private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    private static final String DINGTALK_WEBHOOK_URL = "https://oapi.dingtalk.com/robot/send?access_token=83e8afc691a1199c70bb471ec46d50099e6dd078ce10223bbcc56c0485cb5cc3";
     @SuppressLint("PrivateResource")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -89,7 +107,12 @@ public final class DefaultErrorActivity extends AppCompatActivity {
                     AlertDialog dialog = new AlertDialog.Builder(DefaultErrorActivity.this)
                             .setTitle(R.string.customactivityoncrash_error_activity_error_details_title)
                             .setMessage(CustomActivityOnCrash.getAllErrorDetailsFromIntent(DefaultErrorActivity.this, getIntent()))
-                            .setPositiveButton(R.string.customactivityoncrash_error_activity_error_details_close, null)
+                            .setPositiveButton(R.string.customactivityoncrash_error_activity_error_details_close, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    uploadErrorInfoToDingTalk();
+                                }
+                            })
                             .setNeutralButton(R.string.customactivityoncrash_error_activity_error_details_copy,
                                     new DialogInterface.OnClickListener() {
                                         @Override
@@ -121,5 +144,48 @@ public final class DefaultErrorActivity extends AppCompatActivity {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText(getString(R.string.customactivityoncrash_error_activity_error_details_clipboard_label), errorInformation);
         clipboard.setPrimaryClip(clip);
+        uploadErrorInfoToDingTalk();
+    }
+
+    private void uploadErrorInfoToDingTalk() {
+        String errorInformation = CustomActivityOnCrash.getAllErrorDetailsFromIntent(DefaultErrorActivity.this, getIntent());
+        Log.i("test",errorInformation);
+        String json = "{\"msgtype\": \"markdown\", \"markdown\": {\"title\": \"issues\", \"text\": \"" + errorInformation.replace("\"", "\\\"") + "\"}}";
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                OkHttpClient client = new OkHttpClient();
+                RequestBody body = RequestBody.create(JSON, json);
+                Request request = new Request.Builder()
+                        .url(DINGTALK_WEBHOOK_URL)
+                        .post(body)
+                        .build();
+                try (Response response = client.newCall(request).execute()) {
+                    if (response.isSuccessful()) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(DefaultErrorActivity.this, "The error message was successfully uploaded", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(DefaultErrorActivity.this, "Error message failed to be uploaded", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(DefaultErrorActivity.this, "There was an error with the network request!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        }).start();
     }
 }

@@ -40,6 +40,7 @@
                 android:id="@+id/customactivityoncrash_error_activity_restart_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="10dp"
                 android:layout_marginTop="@dimen/customactivityoncrash_activity_vertical_margin"
                 android:text="@string/customactivityoncrash_error_activity_close_app" />
 
@@ -49,7 +50,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/customactivityoncrash_error_activity_error_details"
-                android:textColor="?colorPrimary" />
+                android:padding="10dp"
+                android:textColor="@color/gray" />
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

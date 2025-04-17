@@ -69,7 +69,7 @@ public class MyBaseApplication extends BaseApplication {
                 .showRestartButton(true) //是否显示重启按钮
                 .trackActivities(true) //是否跟踪Activity
                 .minTimeBetweenCrashesMs(2000) //崩溃的间隔时间(毫秒)
-                .errorDrawable(R.mipmap.ic_launcher) //错误图标
+                .errorDrawable(R.mipmap.ic_dspread_logo) //错误图标
                 .restartActivity(MainActivity.class) //重新启动后的activity
 //                .errorActivity(YourCustomErrorActivity.class) //崩溃后的错误activity
 //                .eventListener(new YourCustomEventListener()) //崩溃后的错误监听

@@ -88,7 +88,7 @@ public class MainViewModel extends BaseViewModel {
         handleNavigationItemClick(integer);
     });
 
-    private void handleNavigationItemClick(int itemId) {
+    public void handleNavigationItemClick(int itemId) {
         MainActivity activity = activityRef.get();
         if (activity == null) return;
         

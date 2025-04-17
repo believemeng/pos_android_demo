@@ -24,6 +24,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 
@@ -31,6 +32,7 @@ import com.dspread.pos.interfaces.MyCustomQPOSCallback;
 import com.dspread.pos.manager.QPOSCallbackManager;
 import com.dspread.pos.ui.base.TitleProvider;
 import com.dspread.pos.utils.DevUtils;
+import com.dspread.pos.utils.Mydialog;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_new_android_app.BR;
 import com.dspread.pos_new_android_app.R;
@@ -149,56 +151,19 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        int action = event.getAction();
+        int keyCode = event.getKeyCode();
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            toolbar.setTitle(getString(R.string.menu_payment));
-//            switchFragment(0);
-            drawerLayout.close();
-            exit();
+            if (action == KeyEvent.ACTION_UP) {
+                toolbar.setTitle(getString(R.string.menu_payment));
+                drawerLayout.close();
+                viewModel.handleNavigationItemClick(R.id.nav_home);
+                exit();
+            }
             return true;
         }
-        else if (viewModel.fragments.get(0)!= null) {
-//            HomeFragment homeFragment = (HomeFragment) viewModel.fragments.get(0);
-//            return homeFragment.onKeyDown(keyCode, event);  // 让 Fragment 处理按键事件
-        }
-        TRACE.i("main keyode = " + keyCode);
-        return super.onKeyDown(keyCode, event);
-    }
-
-    public void switchFragment(List<Fragment> mFragments,int index) {
-        if (currentFragmentIndex == index) {
-            return;
-        }
-        transaction = getSupportFragmentManager().beginTransaction();
-
-        if(currentFragmentIndex != -1) {
-            transaction.hide(mFragments.get(currentFragmentIndex));
-        }
-        if (!mFragments.get(index).isAdded()) {
-            transaction.add(R.id.nav_host_fragment, mFragments.get(index), String.valueOf(index));
-        }
-        transaction.show(mFragments.get(index));
-        transaction.commitAllowingStateLoss();
-        currentFragmentIndex = index;
-         if (mFragments.get(currentFragmentIndex) instanceof TitleProvider) {
-            setToolbarTitle(((TitleProvider) mFragments.get(currentFragmentIndex)).getTitle());
-        }
-    }
-
-    public void exitApp(){
-//        Mydialog.manualExitDialog(MainActivity.this, getString(R.string.msg_exit), new Mydialog.OnMyClickListener() {
-//            @Override
-//            public void onCancel() {
-//                Mydialog.manualExitDialog.dismiss();
-//            }
-//
-//            @Override
-//            public void onConfirm() {
-////                        finish();
-//                finishAllActivities();
-//                Mydialog.manualExitDialog.dismiss();
-//            }
-//        });
+        return super.dispatchKeyEvent(event); // 调用父类的dispatchKeyEvent方法，将事件传递给其他组件
     }
 
     private static boolean isExit = false;
@@ -216,19 +181,18 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             mHandler.sendEmptyMessageDelayed(0, 1500);
         } else {
             isExit = false;
-//            Mydialog.manualExitDialog(MainActivity.this, getString(R.string.msg_exit), new Mydialog.OnMyClickListener() {
-//                @Override
-//                public void onCancel() {
-//                    Mydialog.manualExitDialog.dismiss();
-//                }
-//
-//                @Override
-//                public void onConfirm() {
-////                    finish();
-//                    finishAllActivities();
-//                    Mydialog.manualExitDialog.dismiss();
-//                }
-//            });
+            Mydialog.manualExitDialog(MainActivity.this, getString(R.string.msg_exit), new Mydialog.OnMyClickListener() {
+                @Override
+                public void onCancel() {
+                    Mydialog.manualExitDialog.dismiss();
+                }
+
+                @Override
+                public void onConfirm() {
+                    finish();
+                    Mydialog.manualExitDialog.dismiss();
+                }
+            });
         }
     }
 

@@ -56,4 +56,10 @@
         <!-- 背景颜色 -->
         <item name="android:windowBackground">@color/keyboard_background</item>
     </style>
+
+
+    <style name="popupAnimation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/pop_in</item>
+        <item name="android:windowExitAnimation">@anim/pop_out</item>
+    </style>
 </resources>
