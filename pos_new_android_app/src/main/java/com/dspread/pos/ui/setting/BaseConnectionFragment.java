@@ -12,12 +12,11 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.ViewDataBinding;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.dspread.pos.enums.POS_TYPE;
-import com.dspread.pos.interfaces.MyCustomQPOSCallback;
-import com.dspread.pos.manager.QPOSCallbackManager;
+import com.dspread.pos.common.enums.POS_TYPE;
+import com.dspread.pos.posAPI.MyCustomQPOSCallback;
+import com.dspread.pos.common.manager.QPOSCallbackManager;
 import com.dspread.pos.ui.base.BaseConnectionViewModel;
 import com.dspread.pos.ui.setting.bluetooth.BluetoothFragment;
 import com.dspread.pos.ui.setting.uart.UartFragment;

@@ -6,10 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.databinding.ObservableArrayList;
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
-import com.dspread.pos.base.BaseAppViewModel;
-import com.dspread.pos.enums.PaymentType;
+import com.dspread.pos.common.base.BaseAppViewModel;
+import com.dspread.pos.common.enums.PaymentType;
 
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;

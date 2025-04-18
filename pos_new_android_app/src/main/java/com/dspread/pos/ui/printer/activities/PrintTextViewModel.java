@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
 import com.action.printerservice.PrintStyle;
+import com.dspread.pos.printerAPI.PrinterHelper;
 import com.dspread.pos.ui.printer.activities.base.BasePrinterViewModel;
 import com.dspread.pos_new_android_app.R;
 import com.dspread.print.device.bean.PrintLineStyle;
@@ -77,41 +78,7 @@ public class PrintTextViewModel extends BasePrinterViewModel {
     @Override
     protected void doPrint() {
         try {
-            PrintLineStyle style = new PrintLineStyle();
-            // 设置对齐方式
-            switch (alignText.get()) {
-                case "LEFT":
-                    style.setAlign(PrintLine.LEFT);
-                    break;
-                case "RIGHT":
-                    style.setAlign(PrintLine.RIGHT);
-                    break;
-                case "CENTER":
-                    style.setAlign(PrintLine.CENTER);
-                    break;
-            }
-            
-            // 设置字体样式
-            switch (fontStyle.get()) {
-                case "NORMAL":
-                    style.setFontStyle(PrintStyle.FontStyle.NORMAL);
-                    style.setFontStyle(PrintStyle.Key.ALIGNMENT);
-                    break;
-                case "BOLD":
-                    style.setFontStyle(PrintStyle.FontStyle.BOLD);
-                    break;
-                case "ITALIC":
-                    style.setFontStyle(PrintStyle.FontStyle.ITALIC);
-                    break;
-                case "BOLD_ITALIC":
-                    style.setFontStyle(PrintStyle.FontStyle.BOLD_ITALIC);
-                    break;
-            }
-            
-            style.setFontSize(Integer.parseInt(textSize.get()));
-            getPrinter().setPrintStyle(style);
-            getPrinter().setFooter(30);
-            getPrinter().printText(printContent.get());
+            PrinterHelper.getInstance().printText(alignText.get(), fontStyle.get(), textSize.get(), printContent.get());
         } catch (Exception e) {
             e.printStackTrace();
             onPrintComplete(false, e.getMessage());

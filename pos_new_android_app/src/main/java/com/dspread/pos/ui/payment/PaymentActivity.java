@@ -8,18 +8,19 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.Observer;
 
 import com.dspread.pos.MyBaseApplication;
-import com.dspread.pos.enums.POS_TYPE;
-import com.dspread.pos.interfaces.MyCustomQPOSCallback;
-import com.dspread.pos.manager.QPOSCallbackManager;
+import com.dspread.pos.common.enums.POS_TYPE;
+import com.dspread.pos.posAPI.MyCustomQPOSCallback;
+import com.dspread.pos.common.manager.QPOSCallbackManager;
+import com.dspread.pos.posAPI.POSCommand;
 import com.dspread.pos.ui.payment.pinkeyboard.KeyboardUtil;
 import com.dspread.pos.ui.payment.pinkeyboard.MyKeyboardView;
 import com.dspread.pos.ui.payment.pinkeyboard.PinPadDialog;
 import com.dspread.pos.ui.payment.pinkeyboard.PinPadView;
 import com.dspread.pos.utils.DeviceUtils;
+import com.dspread.pos.utils.LogFileConfig;
 import com.dspread.pos.utils.QPOSUtil;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_new_android_app.BR;
@@ -48,6 +49,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     private int timeOfPinInput;
     public PinPadDialog pinPadDialog;
     private boolean isICC;
+    private LogFileConfig logFileConfig;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -61,6 +63,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     
     @Override
     public void initData() {
+        logFileConfig = LogFileConfig.getInstance(this);
         QPOSCallbackManager.getInstance().registerCallback(MyCustomQPOSCallback.class, this);
         binding.setVariable(BR.viewModel, viewModel);
         viewModel.titleText.set("Paymenting");
@@ -77,7 +80,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             viewModel.setAmount(amount);
         }
 
-        pos = MyBaseApplication.getQposService();
+        POSCommand.getInstance().setQPOSService(MyBaseApplication.getQposService());
         startTransaction();
     }
 
@@ -89,13 +92,13 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             public void onChanged(Boolean aBoolean) {
                 if(aBoolean){
                     if(isICC){
-                        pos.sendOnlineProcessResult("8A023030");
+                        POSCommand.getInstance().sendOnlineProcessResult("8A023030");
                     }else {
                         viewModel.setTransactionSuccess();
                     }
                 }else {
                     if(isICC){
-                        pos.sendOnlineProcessResult("8A023035");
+                        POSCommand.getInstance().sendOnlineProcessResult("8A023035");
                     }else {
                         viewModel.setTransactionFailed("Transaction failed because of the network!");
                     }
@@ -115,9 +118,9 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     private void startTransaction() {
         isICC = false;
         if(POS_TYPE.UART.name().equals(SPUtils.getInstance().getString("ConnectionType"))){
-            pos.setCardTradeMode(QPOSService.CardTradeMode.SWIPE_TAP_INSERT_CARD_NOTUP);
+            POSCommand.getInstance().setCardTradeMode(QPOSService.CardTradeMode.SWIPE_TAP_INSERT_CARD_NOTUP);
         }
-        pos.doTrade(20);
+        POSCommand.getInstance().doTrade(20);
     }
 
     @Override
@@ -165,7 +168,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             } else if (transactionTypeString.equals("SALES_NEW")) {
                 transactionType = QPOSService.TransactionType.SALES_NEW;
             }
-            pos.setAmount(amount, cashbackAmounts, "643", transactionType);
+            POSCommand.getInstance().setAmount(amount, cashbackAmounts, "643", transactionType);
         }
     }
 
@@ -176,10 +179,10 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
     @Override
     public void onRequestTime() {
-        TRACE.d("onRequestTime");
         dismissDialog();
         String terminalTime = new SimpleDateFormat("yyyyMMddHHmmss").format(Calendar.getInstance().getTime());
-        pos.sendTime(terminalTime);
+        TRACE.d("onRequestTime: "+terminalTime);
+        POSCommand.getInstance().sendTime(terminalTime);
     }
 
     @Override
@@ -201,7 +204,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                    pos.selectEmvApp(position);
+                    POSCommand.getInstance().selectEmvApp(position);
                     TRACE.d("select emv app position = " + position);
                     dismissDialog();
                 }
@@ -211,7 +214,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
                 @Override
                 public void onClick(View v) {
-                    pos.cancelSelectEmvApp();
+                    POSCommand.getInstance().cancelSelectEmvApp();
                     dismissDialog();
                 }
             });
@@ -221,13 +224,14 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
     @Override
     public void onQposRequestPinResult(List<String> dataList, int offlineTime) {
+        TRACE.d("onQposRequestPinResult = " + dataList+"\nofflineTime: "+offlineTime);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (pos != null) {
                     viewModel.stopLoading();
                     viewModel.showPinpad.set(true);
-                    boolean onlinePin = pos.isOnlinePin();
+                    boolean onlinePin = POSCommand.getInstance().isOnlinePin();
                     if (keyboardUtil != null) {
                         keyboardUtil.hide();
                     }
@@ -243,7 +247,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                         if (onlinePin) {
                             viewModel.titleText.set(getString(R.string.input_onlinePin));
                         } else {
-                            int cvmPinTryLimit = pos.getCvmPinTryLimit();
+                            int cvmPinTryLimit = POSCommand.getInstance().getCvmPinTryLimit();
                             TRACE.d("PinTryLimit:" + cvmPinTryLimit);
                             if (cvmPinTryLimit == 1) {
                                 viewModel.titleText.set(getString(R.string.input_offlinePin_last));
@@ -255,7 +259,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 }
                 MyKeyboardView.setKeyBoardListener(value -> {
                     if (pos != null) {
-                        pos.pinMapSync(value, 20);
+                        POSCommand.getInstance().pinMapSync(value, 20);
                     }
                 });
                 if (pos != null) {
@@ -268,6 +272,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
     @Override
     public void onRequestSetPin(boolean isOfflinePin, int tryNum) {
+        TRACE.d("onRequestSetPin = " + isOfflinePin+"\ntryNum: "+tryNum);
         runOnUiThread(new Runnable() {
 
             @Override
@@ -292,21 +297,21 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
                     @Override
                     public void onCencel() {
-                        pos.cancelPin();
+                        POSCommand.getInstance().cancelPin();
                         pinPadDialog.dismiss();
                     }
 
                     @Override
                     public void onPaypass() {
-//                        pos.bypassPin();
-                        pos.sendPin("".getBytes());
+//                        POSClass.getInstance().bypassPin();
+                        POSCommand.getInstance().bypassPin();
                         pinPadDialog.dismiss();
                     }
 
                     @Override
                     public void onConfirm(String password) {
-                        String pinBlock = QPOSUtil.buildCvmPinBlock(pos.getEncryptData(), password);// build the ISO format4 pin block
-                        pos.sendCvmPin(pinBlock, true);
+                        String pinBlock = QPOSUtil.buildCvmPinBlock(POSCommand.getInstance().getEncryptData(), password);// build the ISO format4 pin block
+                        POSCommand.getInstance().sendCvmPin(pinBlock, true);
                         pinPadDialog.dismiss();
                     }
                 });
@@ -346,7 +351,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 } else if (result == QPOSService.DoTradeResult.ICC) {
                     isICC = true;
                     viewModel.startLoading(getString(R.string.icc_card_inserted));
-                    pos.doEmvApp(QPOSService.EmvOption.START);
+                    POSCommand.getInstance().doEmvApp(QPOSService.EmvOption.START);
                 } else if (result == QPOSService.DoTradeResult.NOT_ICC) {
                     msg = getString(R.string.card_inserted);
                 } else if (result == QPOSService.DoTradeResult.BAD_SWIPE) {
@@ -517,8 +522,9 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                         content += "pinRandomNumber:" + " " + pinRandomNumber + "\n";
                         cardNo = maskedPAN;
                     }
-                    Hashtable<String, String> h = pos.getNFCBatchData();
+                    Hashtable<String, String> h = POSCommand.getInstance().getNFCBatchData();
                     String tlv = h.get("tlv");
+                    TRACE.i("NFC Batch data: "+tlv);
                     String requestTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
                     String data = "{\"createdAt\": " + requestTime + ", \"deviceInfo\": " + DeviceUtils.getPhoneDetail() + ", \"countryCode\": " + DeviceUtils.getDevieCountry(PaymentActivity.this)
                             + ", \"tlv\": " + tlv + "}";
@@ -545,7 +551,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             public void run() {
                 viewModel.showPinpad.set(false);
                 viewModel.startLoading(getString(R.string.online_process_requested));
-               Hashtable<String, String> decodeData = pos.anlysEmvIccData(tlv);
+               Hashtable<String, String> decodeData = POSCommand.getInstance().anlysEmvIccData(tlv);
                 String requestTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
                 String data = "{\"createdAt\": " + requestTime + ", \"deviceInfo\": " + DeviceUtils.getPhoneDetail() + ", \"countryCode\": " + DeviceUtils.getDevieCountry(PaymentActivity.this)
                         + ", \"tlv\": " + tlv + "}";
@@ -629,12 +635,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     @Override
     public void onQposIsCardExist(boolean cardIsExist) {
         TRACE.d("onQposIsCardExist(boolean cardIsExist):" + cardIsExist);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        });
 
     }
 
@@ -771,17 +771,24 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         if(keyboardUtil != null){
             keyboardUtil.hide();
         }
+        TRACE.w(error.name());
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        pos.cancelTrade();
+        POSCommand.getInstance().cancelTrade();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        // 上传日志文件
+        String log = logFileConfig.readLog();
+
+        // 上传文件内容到Bugly
+//        CrashReport.putUserData(this, "logFile_DSLogs", log);
         QPOSCallbackManager.getInstance().unregisterCallback(MyCustomQPOSCallback.class);
     }
 }

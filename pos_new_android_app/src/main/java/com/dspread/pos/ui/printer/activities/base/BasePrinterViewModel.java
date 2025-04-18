@@ -6,7 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
 
-import com.dspread.pos.base.BaseAppViewModel;
+import com.dspread.pos.common.base.BaseAppViewModel;
+import com.dspread.pos.printerAPI.PrinterHelper;
 import com.dspread.print.device.PrinterDevice;
 
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
@@ -16,6 +17,7 @@ public abstract class BasePrinterViewModel extends BaseAppViewModel {
 
     public void setPrinter(PrinterDevice printer) {
         this.mPrinter = printer;
+        PrinterHelper.getInstance().setPrinter(mPrinter);
     }
 
     protected PrinterDevice getPrinter() {

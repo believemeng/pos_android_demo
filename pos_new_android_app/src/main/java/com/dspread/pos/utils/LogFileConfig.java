@@ -5,6 +5,10 @@ import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
+import com.alibaba.fastjson.JSON;
+import com.tencent.bugly.crashreport.BuglyLog;
+import com.tencent.bugly.crashreport.CrashReport;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -16,6 +20,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LogFileConfig {
     public  File logFileWR = null;
@@ -82,6 +88,8 @@ public class LogFileConfig {
             d.write(str.getBytes());
             d.flush();
             d.close();
+            // 上传日志到Bugly
+//            CrashReport.postCatchedException(new Exception(str));
         } catch (Exception e) {
 //            e.printStackTrace();
         }
@@ -102,6 +110,33 @@ public class LogFileConfig {
             while ((temp = bufferedReader.readLine()) != null) {
                 result.append(temp);
             }
+
+            int maxLength = 512; // Bugly对每段数据长度有限制
+            int segments = (result.length() + maxLength - 1) / maxLength;
+
+            for (int i = 0; i < segments; i++) {
+                int start = i * maxLength;
+                int end = Math.min((i + 1) * maxLength, result.length());
+                String segment = result.substring(start, end);
+
+                // 上传日志片段
+                Map<String, String> map = new HashMap<>();
+                map.put("logFileName", file.getName());
+                map.put("segmentIndex", String.valueOf(i));
+                map.put("totalSegments", String.valueOf(segments));
+                map.put("logContent", segment);
+
+                CrashReport.putUserData(mContext,
+                        "customLog_" + file.getName() + "_" + i,
+                        JSON.toJSONString(map));
+            }
+
+            // 设置场景标签
+            CrashReport.setUserSceneTag(mContext, 90001);
+
+            // 触发上传
+            CrashReport.postCatchedException(
+                    new Exception("CustomLog: " + file.getName() + ", segments: " + segments));
             Log.i("POS", "result:" + result);
             return result.toString();
         } catch (Exception e) {

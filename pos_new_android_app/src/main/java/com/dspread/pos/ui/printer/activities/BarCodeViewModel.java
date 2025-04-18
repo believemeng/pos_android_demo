@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
 import com.action.printerservice.barcode.Barcode1D;
+import com.dspread.pos.printerAPI.PrinterHelper;
 import com.dspread.pos.ui.printer.activities.base.BasePrinterViewModel;
 import com.dspread.pos.ui.printer.activities.base.PrintDialog;
 import com.dspread.pos.utils.QRCodeUtil;
@@ -90,29 +91,8 @@ public class BarCodeViewModel extends BasePrinterViewModel {
     @Override
     protected void doPrint() {
         try {
-            PrintLineStyle style = new PrintLineStyle();
-            int printLineAlign = 0;
-            switch (align.get()) {
-                case "LEFT":
-                    printLineAlign = PrintLine.LEFT;
-                    break;
-                case "RIGHT":
-                    printLineAlign = PrintLine.RIGHT;
-                    break;
-                case "CENTER":
-                    printLineAlign = PrintLine.CENTER;
-                    break;
-            }
-
-            Bitmap bitmap = QRCodeUtil.getBarCodeBM(content.get(),Integer.parseInt(width.get()), Integer.parseInt(height.get()));
+            Bitmap bitmap = PrinterHelper.getInstance().printBarCode(getApplication(), align.get(), width.get(), height.get(), content.get(), speedLevel.get(), densityLevel.get(), symbology.get());
             generateBarcode(bitmap);
-            if ("mp600".equals(Build.MODEL)) {
-                getPrinter().setPrinterSpeed(Integer.parseInt(speedLevel.get()));
-                getPrinter().setPrinterDensity(Integer.parseInt(densityLevel.get()));
-            }
-            getPrinter().setPrintStyle(style);
-            getPrinter().setFooter(30);
-            getPrinter().printBarCode(getApplication(), symbology.get(), Integer.parseInt(width.get()), Integer.parseInt(height.get()), content.get(), printLineAlign);
         } catch (Exception e) {
             e.printStackTrace();
             onPrintComplete(false, e.getMessage());

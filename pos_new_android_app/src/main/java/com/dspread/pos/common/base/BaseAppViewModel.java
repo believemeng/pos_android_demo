@@ -1,4 +1,4 @@
-package com.dspread.pos.base;
+package com.dspread.pos.common.base;
 
 import android.app.Application;
 import android.content.Context;

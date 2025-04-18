@@ -13,7 +13,7 @@ import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableList;
 
 import com.dspread.pos.MyBaseApplication;
-import com.dspread.pos.enums.POS_TYPE;
+import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.ui.base.BaseConnectionViewModel;
 import com.dspread.pos.ui.setting.bluetooth.MultiRecycleHeadViewModel;
 import com.dspread.pos.ui.setting.bluetooth.MultiRecycleLeftItemViewModel;

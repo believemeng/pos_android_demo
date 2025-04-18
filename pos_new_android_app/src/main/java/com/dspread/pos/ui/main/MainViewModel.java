@@ -1,7 +1,6 @@
 package com.dspread.pos.ui.main;
 
 import android.app.Application;
-import android.os.Build;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -10,7 +9,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.dspread.pos.MyBaseApplication;
-import com.dspread.pos.manager.FragmentCacheManager;
+import com.dspread.pos.common.manager.FragmentCacheManager;
 import com.dspread.pos.ui.base.TitleProvider;
 import com.dspread.pos.ui.home.HomeFragment;
 import com.dspread.pos.ui.printer.PrinterHelperFragment;
@@ -22,7 +21,6 @@ import com.dspread.pos_new_android_app.R;
 import com.dspread.xpos.QPOSService;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseApplication;

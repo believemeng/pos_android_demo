@@ -1,4 +1,4 @@
-package com.dspread.pos.annotations;
+package com.dspread.pos.common.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

@@ -7,16 +7,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 
-import com.dspread.pos.base.BaseFragment;
+import com.dspread.pos.common.base.BaseFragment;
 import com.dspread.pos.ui.base.TitleProvider;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos_new_android_app.R;

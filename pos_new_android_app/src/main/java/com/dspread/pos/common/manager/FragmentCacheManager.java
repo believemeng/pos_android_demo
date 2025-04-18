@@ -1,4 +1,4 @@
-package com.dspread.pos.manager;
+package com.dspread.pos.common.manager;
 
 import androidx.fragment.app.Fragment;
 import java.util.HashMap;

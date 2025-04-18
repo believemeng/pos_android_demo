@@ -1,4 +1,4 @@
-package com.dspread.pos.http.api;
+package com.dspread.pos.common.http.api;
 
 import java.util.Map;
 

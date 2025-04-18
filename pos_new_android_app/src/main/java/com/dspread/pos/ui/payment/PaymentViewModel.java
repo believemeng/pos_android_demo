@@ -5,26 +5,21 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
-import androidx.lifecycle.Observer;
 
-import com.dspread.pos.base.BaseAppViewModel;
-import com.dspread.pos.enums.POS_TYPE;
-import com.dspread.pos.http.RetrofitClient;
-import com.dspread.pos.http.api.DingTalkApiService;
-import com.dspread.pos.http.model.DingTalkRequest;
+import com.dspread.pos.common.base.BaseAppViewModel;
+import com.dspread.pos.common.http.RetrofitClient;
+import com.dspread.pos.common.http.api.DingTalkApiService;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
 import me.goldze.mvvmhabit.http.BaseResponse;
-import me.goldze.mvvmhabit.utils.RxUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 

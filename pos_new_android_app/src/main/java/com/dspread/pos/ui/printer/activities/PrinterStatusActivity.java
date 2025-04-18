@@ -1,6 +1,7 @@
 package com.dspread.pos.ui.printer.activities;
 
 import android.os.Bundle;
+import android.view.View;
 
 import com.dspread.pos.ui.printer.activities.base.PrinterBaseActivity;
 import com.dspread.pos_new_android_app.BR;
@@ -20,6 +21,7 @@ public class PrinterStatusActivity extends PrinterBaseActivity<ActivityPrinterBa
         contentBinding.setViewModel(viewModel);
         binding.contentContainer.addView(contentBinding.getRoot());
         viewModel.title.set(getString(R.string.get_printer_status));
+        binding.btnPrint.setVisibility(View.GONE);
     }
 
     @Override

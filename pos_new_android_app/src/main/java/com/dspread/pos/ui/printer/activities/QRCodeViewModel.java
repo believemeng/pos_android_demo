@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
 import com.action.printerservice.barcode.Barcode2D;
+import com.dspread.pos.printerAPI.PrinterHelper;
 import com.dspread.pos.ui.printer.activities.base.BasePrinterViewModel;
 import com.dspread.pos.utils.QRCodeUtil;
 import com.dspread.print.device.bean.PrintLineStyle;
@@ -74,32 +75,11 @@ public class QRCodeViewModel extends BasePrinterViewModel {
     @Override
     protected void doPrint() {
         try {
-                PrintLineStyle style = new PrintLineStyle();
-                int printLineAlign = PrintLine.CENTER;
-                switch (align.get()) {
-                    case "LEFT":
-                        printLineAlign = PrintLine.LEFT;
-                        break;
-                    case "RIGHT":
-                        printLineAlign = PrintLine.RIGHT;
-                        break;
-                }
-
-                int qrSize = Integer.parseInt(size.get());
-                Bitmap bitmap = QRCodeUtil.getQrcodeBM(content.get(), qrSize);
+                Bitmap bitmap = PrinterHelper.getInstance().printQRcode(getApplication(),align.get(), size.get(), content.get(), errorLevel.get());
                 qrCodeImage.set(bitmap);
-
-                getPrinter().setPrintStyle(style);
-                getPrinter().setFooter(30);
-                getPrinter().printQRCode(getApplication(), errorLevel.get(), qrSize, content.get(), printLineAlign);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    @Override
-    public void accept(Object o) throws Exception {
-
-    }
 }

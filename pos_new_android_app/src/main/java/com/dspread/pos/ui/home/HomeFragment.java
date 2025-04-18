@@ -3,15 +3,11 @@ package com.dspread.pos.ui.home;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import androidx.appcompat.app.AlertDialog;
-
-import com.dspread.pos.base.BaseFragment;
-import com.dspread.pos.enums.PaymentType;
+import com.dspread.pos.common.base.BaseFragment;
 import com.dspread.pos.ui.base.TitleProvider;
 import com.dspread.pos.ui.payment.PaymentActivity;
 import com.dspread.pos_new_android_app.BR;

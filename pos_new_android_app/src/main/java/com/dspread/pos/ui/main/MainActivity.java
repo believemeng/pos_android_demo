@@ -18,29 +18,20 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
 
-import com.dspread.pos.interfaces.MyCustomQPOSCallback;
-import com.dspread.pos.manager.QPOSCallbackManager;
-import com.dspread.pos.ui.base.TitleProvider;
+import com.dspread.pos.posAPI.MyCustomQPOSCallback;
+import com.dspread.pos.common.manager.QPOSCallbackManager;
 import com.dspread.pos.utils.DevUtils;
 import com.dspread.pos.utils.Mydialog;
-import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_new_android_app.BR;
 import com.dspread.pos_new_android_app.R;
 import com.dspread.pos_new_android_app.databinding.ActivityMainBinding;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-
-import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.SPUtils;

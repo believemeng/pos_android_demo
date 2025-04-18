@@ -1,4 +1,4 @@
-package com.dspread.pos.enums;
+package com.dspread.pos.common.enums;
 
 public enum PaymentType {
     GOODS("GOODS"),

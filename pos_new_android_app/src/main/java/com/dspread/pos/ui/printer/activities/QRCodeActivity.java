@@ -37,10 +37,6 @@ public class QRCodeActivity extends PrinterBaseActivity<ActivityPrinterBaseBindi
         contentBinding.linDensityLevel.setVisibility(View.GONE);
     }
 
-    @Override
-    protected void onReturnPrintResult(boolean isSuccess, String status, PrinterDevice.ResultType resultType) {
-
-    }
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -177,6 +173,11 @@ public class QRCodeActivity extends PrinterBaseActivity<ActivityPrinterBaseBindi
             }
         });
 
+    }
+
+    @Override
+    protected void onReturnPrintResult(boolean isSuccess, String status, PrinterDevice.ResultType resultType) {
+        viewModel.onPrintComplete(isSuccess, status);
     }
 
 }

@@ -1,28 +1,12 @@
 package com.dspread.pos.ui.scan;
 
-import static android.app.Activity.RESULT_OK;
-
-import android.app.Activity;
 import android.app.Application;
-import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.RemoteException;
-import android.util.Log;
-import android.view.Gravity;
-import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
 
-import com.dspread.pos.base.BaseAppViewModel;
-import com.dspread.pos_new_android_app.R;
+import com.dspread.pos.common.base.BaseAppViewModel;
 
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;

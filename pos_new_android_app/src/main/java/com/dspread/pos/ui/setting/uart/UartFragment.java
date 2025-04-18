@@ -1,8 +1,5 @@
 package com.dspread.pos.ui.setting.uart;
 
-import androidx.lifecycle.Observer;
-
-import com.dspread.pos.enums.POS_TYPE;
 import com.dspread.pos.ui.setting.BaseConnectionFragment;
 import com.dspread.pos.ui.setting.ConnectionViewModel;
 import com.dspread.pos_new_android_app.BR;

@@ -1,4 +1,4 @@
-package com.dspread.pos.http.model;
+package com.dspread.pos.common.http.model;
 
 public class DingTalkRequest {
     private String msgtype = "text";

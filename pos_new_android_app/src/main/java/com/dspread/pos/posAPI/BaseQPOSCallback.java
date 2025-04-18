@@ -1,4 +1,4 @@
-package com.dspread.pos.interfaces;
+package com.dspread.pos.posAPI;
 
 import com.dspread.xpos.QPOSService;
 

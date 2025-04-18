@@ -5,7 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
-import com.dspread.pos.base.BaseAppViewModel;
+import com.dspread.pos.common.base.BaseAppViewModel;
 import com.dspread.pos_new_android_app.R;
 
 import me.goldze.mvvmhabit.binding.command.BindingCommand;

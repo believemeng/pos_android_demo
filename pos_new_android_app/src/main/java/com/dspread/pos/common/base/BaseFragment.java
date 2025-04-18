@@ -1,4 +1,4 @@
-package com.dspread.pos.base;
+package com.dspread.pos.common.base;
 
 import androidx.databinding.ViewDataBinding;
 

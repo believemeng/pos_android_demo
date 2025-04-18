@@ -1,4 +1,4 @@
-package com.dspread.pos.http;
+package com.dspread.pos.common.http;
 
 import com.google.gson.GsonBuilder;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;

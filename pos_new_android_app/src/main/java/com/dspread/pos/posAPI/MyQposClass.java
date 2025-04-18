@@ -1,13 +1,11 @@
-package com.dspread.pos.base;
+package com.dspread.pos.posAPI;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.util.Log;
 
-import com.dspread.pos.annotations.CallbackChange;
-import com.dspread.pos.interfaces.BaseQPOSCallback;
-import com.dspread.pos.interfaces.MyCustomQPOSCallback;
-import com.dspread.pos.manager.QPOSCallbackManager;
+import com.dspread.pos.common.annotations.CallbackChange;
+import com.dspread.pos.common.manager.QPOSCallbackManager;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.xpos.CQPOSService;
 import com.dspread.xpos.QPOSService;

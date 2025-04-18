@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
 
+import com.dspread.pos.printerAPI.PrinterHelper;
 import com.dspread.pos.ui.printer.activities.base.BasePrinterViewModel;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_new_android_app.R;
@@ -40,7 +41,7 @@ public class PrinterStatusViewModel extends BasePrinterViewModel {
     public BindingCommand onGetStatusClick = new BindingCommand(() -> {
         try {
             if (getPrinter() != null) {
-                getPrinter().getPrinterStatus();
+                PrinterHelper.getInstance().getPrinterStatus();
             }
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -50,7 +51,7 @@ public class PrinterStatusViewModel extends BasePrinterViewModel {
     public BindingCommand onGetDensityClick = new BindingCommand(() -> {
         try {
             if (getPrinter() != null) {
-                getPrinter().getPrinterDensity();
+                PrinterHelper.getInstance().getPrinterDensity();
             }
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -60,7 +61,7 @@ public class PrinterStatusViewModel extends BasePrinterViewModel {
     public BindingCommand onGetSpeedClick = new BindingCommand(() -> {
         try {
             if (getPrinter() != null) {
-                getPrinter().getPrinterSpeed();
+                PrinterHelper.getInstance().getPrinterSpeed();
             }
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -70,7 +71,7 @@ public class PrinterStatusViewModel extends BasePrinterViewModel {
     public BindingCommand onGetTemperatureClick = new BindingCommand(() -> {
         try {
             if (getPrinter() != null) {
-                getPrinter().getPrinterTemperature();
+                PrinterHelper.getInstance().getPrinterTemperature();
             }
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -80,7 +81,7 @@ public class PrinterStatusViewModel extends BasePrinterViewModel {
     public BindingCommand onGetVoltageClick = new BindingCommand(() -> {
         try {
             if (getPrinter() != null) {
-                getPrinter().getPrinterVoltage();
+                PrinterHelper.getInstance().getPrinterVoltage();
             }
         } catch (RemoteException e) {
             e.printStackTrace();

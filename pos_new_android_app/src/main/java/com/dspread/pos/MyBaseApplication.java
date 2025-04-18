@@ -1,24 +1,22 @@
 package com.dspread.pos;
 
-import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
-import android.os.Looper;
 
 
-import com.dspread.pos.base.MyQposClass;
-import com.dspread.pos.manager.FragmentCacheManager;
+import com.dspread.pos.posAPI.MyQposClass;
+import com.dspread.pos.common.manager.FragmentCacheManager;
 import com.dspread.pos.ui.main.MainActivity;
+import com.dspread.pos.utils.DevUtils;
 import com.dspread.pos.utils.TRACE;
+import com.dspread.pos_new_android_app.BuildConfig;
 import com.dspread.pos_new_android_app.R;
 import com.dspread.xpos.QPOSService;
-
-import java.util.Stack;
-import java.util.concurrent.TimeUnit;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import me.goldze.mvvmhabit.base.BaseApplication;
 import me.goldze.mvvmhabit.crash.CaocConfig;
-import okhttp3.OkHttpClient;
 
 
 /**
@@ -36,8 +34,10 @@ public class MyBaseApplication extends BaseApplication {
         getApplicationInstance = this;
         instance = this;
         initCrash();
+        initBugly();
         // 初始化Fragment缓存
         FragmentCacheManager.getInstance();
+        TRACE.setContext(this);
     }
 
     // 优化 QPOSService 获取方法
@@ -74,5 +74,29 @@ public class MyBaseApplication extends BaseApplication {
 //                .errorActivity(YourCustomErrorActivity.class) //崩溃后的错误activity
 //                .eventListener(new YourCustomEventListener()) //崩溃后的错误监听
                 .apply();
+    }
+
+    private void initBugly() {
+        Context context = getApplicationContext();
+        // 获取当前包名
+        String packageName = context.getPackageName();
+        // 获取当前进程名
+        String processName = DevUtils.getProcessName(android.os.Process.myPid());
+        // 设置是否为上报进程
+        CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
+        strategy.setUploadProcess(processName == null || processName.equals(packageName));
+        strategy.setAppVersion(DevUtils.getPackageVersionName(this, packageName));
+        strategy.setAppPackageName(packageName);
+
+        // 初始化Bugly
+        CrashReport.initCrashReport(context, "b2d80aa171", BuildConfig.DEBUG, strategy);
+
+        // 设置用户数据
+        CrashReport.setUserId(DevUtils.getDeviceId(this));
+
+        // 添加自定义日志
+        CrashReport.setUserSceneTag(context, 9527); // 设置标签
+        CrashReport.putUserData(context, "deviceModel", Build.MODEL);
+        CrashReport.putUserData(context, "deviceManufacturer", Build.MANUFACTURER);
     }
 }

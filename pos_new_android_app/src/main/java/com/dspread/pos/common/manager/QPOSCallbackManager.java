@@ -1,6 +1,6 @@
-package com.dspread.pos.manager;
+package com.dspread.pos.common.manager;
 
-import com.dspread.pos.interfaces.BaseQPOSCallback;
+import com.dspread.pos.posAPI.BaseQPOSCallback;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

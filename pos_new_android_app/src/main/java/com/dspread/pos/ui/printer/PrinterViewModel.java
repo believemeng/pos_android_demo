@@ -2,11 +2,10 @@ package com.dspread.pos.ui.printer;
 
 import android.app.Application;
 import android.content.Intent;
-import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
-import com.dspread.pos.base.BaseAppViewModel;
+import com.dspread.pos.common.base.BaseAppViewModel;
 
 import com.dspread.pos.ui.printer.activities.BarCodeActivity;
 import com.dspread.pos.ui.printer.activities.BitmapActivity;
@@ -51,20 +50,6 @@ public class PrinterViewModel extends BaseAppViewModel {
             Intent intent = new Intent(getApplication(), item.activityClass);
             startActivityEvent.setValue(intent);
         }
-//        if (R.string.function_text == title) {
-//            startActivity(PrintTextActivity.class, bundle);
-//        } else if (R.string.function_barcode == title) {
-//            startActivity(BarCodeActivity.class, bundle);
-//        } else if(R.string.function_qrcode == title){
-//            startActivity(QRCodeActivity.class, bundle);
-//        }else if(R.string.function_pic == title){
-//            startActivity(BitmapActivity.class, bundle);
-//        }else if(R.string.function_multi == title){
-//            startActivity(PrintFunctionMultiActivity.class, bundle);
-//        }else if(R.string.print_ticket == title){
-//            startActivity(PrintTicketActivity.class, bundle);
-//        }
-        // ... 其他打印类型
     }
 
     public PrinterViewModel(@NonNull Application application) {
