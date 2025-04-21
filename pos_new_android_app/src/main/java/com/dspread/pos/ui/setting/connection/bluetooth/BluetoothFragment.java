@@ -1,4 +1,4 @@
-package com.dspread.pos.ui.setting.bluetooth;
+package com.dspread.pos.ui.setting.connection.bluetooth;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -20,8 +20,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.posAPI.MyCustomQPOSCallback;
-import com.dspread.pos.ui.setting.BaseConnectionFragment;
-import com.dspread.pos.ui.setting.ConnectionViewModel;
+import com.dspread.pos.ui.setting.connection.BaseConnectionFragment;
+import com.dspread.pos.ui.setting.connection.ConnectionViewModel;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_new_android_app.BR;
 import com.dspread.pos_new_android_app.R;

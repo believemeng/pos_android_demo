@@ -1,4 +1,4 @@
-package com.dspread.pos.ui.setting.usb;
+package com.dspread.pos.ui.setting.connection.usb;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;

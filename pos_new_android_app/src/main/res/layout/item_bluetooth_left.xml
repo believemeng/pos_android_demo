@@ -3,11 +3,11 @@
 
     <data>
 
-        <import type="com.dspread.pos.ui.setting.bluetooth.MultiRecycleLeftItemViewModel" />
+        <import type="com.dspread.pos.ui.setting.connection.bluetooth.MultiRecycleLeftItemViewModel" />
 
         <variable
             name="viewModel"
-            type="MultiRecycleLeftItemViewModel" />
+            type="com.dspread.pos.ui.setting.connection.bluetooth.MultiRecycleLeftItemViewModel" />
 
     </data>
     <LinearLayout

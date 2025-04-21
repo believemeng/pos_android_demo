@@ -1,7 +1,7 @@
-package com.dspread.pos.ui.setting.uart;
+package com.dspread.pos.ui.setting.connection.uart;
 
-import com.dspread.pos.ui.setting.BaseConnectionFragment;
-import com.dspread.pos.ui.setting.ConnectionViewModel;
+import com.dspread.pos.ui.setting.connection.BaseConnectionFragment;
+import com.dspread.pos.ui.setting.connection.ConnectionViewModel;
 import com.dspread.pos_new_android_app.BR;
 import com.dspread.pos_new_android_app.R;
 import com.dspread.pos_new_android_app.databinding.FragmentUartBinding;

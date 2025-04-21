@@ -3,11 +3,11 @@
 
     <data>
 
-        <import type="com.dspread.pos.ui.setting.bluetooth.MultiRecycleHeadViewModel" />
+        <import type="com.dspread.pos.ui.setting.connection.bluetooth.MultiRecycleHeadViewModel" />
 
         <variable
             name="viewModel"
-            type="MultiRecycleHeadViewModel" />
+            type="com.dspread.pos.ui.setting.connection.bluetooth.MultiRecycleHeadViewModel" />
 
     </data>
 

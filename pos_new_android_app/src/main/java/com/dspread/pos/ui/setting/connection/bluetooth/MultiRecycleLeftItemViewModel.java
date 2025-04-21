@@ -1,10 +1,10 @@
-package com.dspread.pos.ui.setting.bluetooth;
+package com.dspread.pos.ui.setting.connection.bluetooth;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
 
-import com.dspread.pos.ui.setting.ConnectionViewModel;
+import com.dspread.pos.ui.setting.connection.ConnectionViewModel;
 
 import me.goldze.mvvmhabit.base.MultiItemViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingAction;

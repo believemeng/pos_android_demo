@@ -1,8 +1,11 @@
 package com.dspread.pos.posAPI;
 
+import com.dspread.pos.common.enums.TransCardMode;
 import com.dspread.xpos.QPOSService;
 
 import java.util.Hashtable;
+
+import me.goldze.mvvmhabit.utils.SPUtils;
 
 public class POSCommand {
     public QPOSService pos;
@@ -21,7 +24,9 @@ public class POSCommand {
     public void setQPOSService(QPOSService pos){
         this.pos = pos;
     }
-    public void setCardTradeMode(QPOSService.CardTradeMode mode){
+    public void setCardTradeMode(){
+        String modeName = SPUtils.getInstance().getString("cardTradeMode");
+        QPOSService.CardTradeMode mode = TransCardMode.valueOf(modeName).getCardTradeModeValue();
         pos.setCardTradeMode(mode);
     }
     public void doTrade(int timeout){

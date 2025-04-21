@@ -9,13 +9,17 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
@@ -28,10 +32,13 @@ import com.dspread.pos.posAPI.MyCustomQPOSCallback;
 import com.dspread.pos.common.manager.QPOSCallbackManager;
 import com.dspread.pos.utils.DevUtils;
 import com.dspread.pos.utils.Mydialog;
+import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_new_android_app.BR;
 import com.dspread.pos_new_android_app.R;
 import com.dspread.pos_new_android_app.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.Hashtable;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.SPUtils;
@@ -82,16 +89,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 //        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
 //                .findFragmentById(R.id.nav_host_fragment);
         QPOSCallbackManager.getInstance().registerCallback(MyCustomQPOSCallback.class, this);
-        if (navController != null) {
-            // 设置预加载数量
-            navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-                // 预加载下一个 Fragment
-                if (destination.getId() == R.id.nav_home) {
-                    navController.navigate(R.id.nav_setting, null, null, null);
-                    navController.popBackStack();
-                }
-            });
-        }
         viewModel = new MainViewModel(getApplication(), this);
         binding.setVariable(BR.viewModel, viewModel);
         drawerLayout = binding.drawerLayout;
@@ -106,6 +103,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
+        // 初始化时隐藏Setting的子菜单
+//        hideSettingSubmenu();
+
         viewModel.openDevice();
     }
 
@@ -198,6 +199,11 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     public void onRequestQposConnected() {
         MyCustomQPOSCallback.super.onRequestQposConnected();
         SPUtils.getInstance().put("isConnected",true);
+        if(viewModel.pos != null){
+           Hashtable<String, Object> posIdTable = viewModel.pos.syncGetQposId(5);
+            String posId = posIdTable.get("posId") == null ? "" : (String) posIdTable.get("posId");
+            SPUtils.getInstance().put("posID",posId);
+        }
     }
 }
 

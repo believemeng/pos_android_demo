@@ -1,4 +1,4 @@
-package com.dspread.pos.ui.setting;
+package com.dspread.pos.ui.setting.connection;
 
 import android.app.AlertDialog;
 import android.app.Application;
@@ -15,15 +15,16 @@ import androidx.databinding.ObservableList;
 import com.dspread.pos.MyBaseApplication;
 import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.ui.base.BaseConnectionViewModel;
-import com.dspread.pos.ui.setting.bluetooth.MultiRecycleHeadViewModel;
-import com.dspread.pos.ui.setting.bluetooth.MultiRecycleLeftItemViewModel;
-import com.dspread.pos.ui.setting.usb.USBClass;
+import com.dspread.pos.ui.setting.connection.bluetooth.MultiRecycleHeadViewModel;
+import com.dspread.pos.ui.setting.connection.bluetooth.MultiRecycleLeftItemViewModel;
+import com.dspread.pos.ui.setting.connection.usb.USBClass;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_new_android_app.BR;
 import com.dspread.pos_new_android_app.R;
 import com.dspread.xpos.QPOSService;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import me.goldze.mvvmhabit.base.BaseApplication;
 import me.goldze.mvvmhabit.base.MultiItemViewModel;
@@ -71,6 +72,7 @@ public class ConnectionViewModel extends BaseConnectionViewModel {
         }
         spUtils = SPUtils.getInstance();
         if(spUtils.getBoolean("isConnected")){
+            pos = MyBaseApplication.getQposService();
             onUartConnected();
         }
     }
@@ -282,6 +284,15 @@ public class ConnectionViewModel extends BaseConnectionViewModel {
             connectionStatus.set("Connection Method");
             SPUtils.getInstance().put("ConnectionType","");
         }
+        getQposID();
+    }
+
+    private void getQposID(){
+        if("".equals(SPUtils.getInstance().getString(""))){
+            Hashtable<String, Object> posIdTable = pos.syncGetQposId(5);
+            String posId = posIdTable.get("posId") == null ? "" : (String) posIdTable.get("posId");
+            spUtils.put("posID",posId);
+        }
     }
 
     public void onUartConnected() {
@@ -290,18 +301,21 @@ public class ConnectionViewModel extends BaseConnectionViewModel {
         uartConnectionStatus.set("Connected Successfully!");
         spUtils.put("ConnectionType",POS_TYPE.UART.name());
         ToastUtils.showShort("Uart has been connected!");
+        getQposID();
     }
 
     public void onUsbConnected() {
         isUSBConnected.set(true);
         spUtils.put("ConnectionType",POS_TYPE.USB.name());
         usbConnectionStatus.set("Connected Successfully!");
+        getQposID();
     }
 
     public void onDeviceDisconnected(POS_TYPE posType) {
         TRACE.d("disconnect = "+posType);
         spUtils.put("isConnected",false);
         spUtils.put("ConnectionType","");
+        spUtils.put("posID","");
         if(posType == POS_TYPE.UART){
             ToastUtils.showShort("Uart has been disconnected!");
             uartConnectionStatus.set("Connected Failed!");

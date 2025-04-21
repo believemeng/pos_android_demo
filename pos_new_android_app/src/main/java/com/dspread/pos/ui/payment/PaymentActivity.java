@@ -117,9 +117,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
     private void startTransaction() {
         isICC = false;
-        if(POS_TYPE.UART.name().equals(SPUtils.getInstance().getString("ConnectionType"))){
-            POSCommand.getInstance().setCardTradeMode(QPOSService.CardTradeMode.SWIPE_TAP_INSERT_CARD_NOTUP);
-        }
+        POSCommand.getInstance().setCardTradeMode();
         POSCommand.getInstance().doTrade(20);
     }
 

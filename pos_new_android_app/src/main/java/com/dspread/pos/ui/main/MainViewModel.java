@@ -1,7 +1,9 @@
 package com.dspread.pos.ui.main;
 
 import android.app.Application;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -14,11 +16,13 @@ import com.dspread.pos.ui.base.TitleProvider;
 import com.dspread.pos.ui.home.HomeFragment;
 import com.dspread.pos.ui.printer.PrinterHelperFragment;
 import com.dspread.pos.ui.scan.ScanFragment;
-import com.dspread.pos.ui.setting.ViewPagerGroupFragment;
+import com.dspread.pos.ui.setting.configuration.ConfigurationFragment;
+import com.dspread.pos.ui.setting.connection.ViewPagerGroupFragment;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_new_android_app.R;
 import com.dspread.xpos.QPOSService;
+import com.google.android.material.navigation.NavigationView;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -40,7 +44,7 @@ public class MainViewModel extends BaseViewModel {
     private WeakReference<MainActivity> activityRef;
     private Fragment currentFragment;
     private MyBaseApplication myBaseApplication;
-    private QPOSService pos;
+    public QPOSService pos;
 
     public MainViewModel(@NonNull Application application, MainActivity activity) {
         super(application);
@@ -89,7 +93,7 @@ public class MainViewModel extends BaseViewModel {
     public void handleNavigationItemClick(int itemId) {
         MainActivity activity = activityRef.get();
         if (activity == null) return;
-        
+
         Fragment targetFragment;
         // 从缓存中获取Fragment
         if (FragmentCacheManager.getInstance().hasFragment(itemId)) {
@@ -101,7 +105,7 @@ public class MainViewModel extends BaseViewModel {
                 FragmentCacheManager.getInstance().putFragment(itemId, targetFragment);
             }
         }
-        
+
         if (targetFragment != null) {
             switchFragment(targetFragment);
             // 设置标题
@@ -115,12 +119,14 @@ public class MainViewModel extends BaseViewModel {
         switch (itemId) {
             case R.id.nav_home:
                 return new HomeFragment();
-            case R.id.nav_setting:
+            case R.id.nav_connection:
                 return new ViewPagerGroupFragment();
             case R.id.nav_printer:
                 return new PrinterHelperFragment();
             case R.id.nav_scan:
                 return new ScanFragment();
+            case R.id.nav_configuration:
+                return new ConfigurationFragment();
         }
 
         return null;

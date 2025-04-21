@@ -1,9 +1,9 @@
-package com.dspread.pos.ui.setting.usb;
+package com.dspread.pos.ui.setting.connection.usb;
 
 import androidx.appcompat.app.AlertDialog;
 
-import com.dspread.pos.ui.setting.BaseConnectionFragment;
-import com.dspread.pos.ui.setting.ConnectionViewModel;
+import com.dspread.pos.ui.setting.connection.BaseConnectionFragment;
+import com.dspread.pos.ui.setting.connection.ConnectionViewModel;
 import com.dspread.pos_new_android_app.BR;
 import com.dspread.pos_new_android_app.R;
 import com.dspread.pos_new_android_app.databinding.FragmentUsbBinding;

@@ -1,12 +1,12 @@
-package com.dspread.pos.ui.setting;
+package com.dspread.pos.ui.setting.connection;
 
 import androidx.fragment.app.Fragment;
 
 import com.dspread.pos.ui.base.TitleProvider;
 import com.dspread.pos.ui.base.fragment.BasePagerFragment;
-import com.dspread.pos.ui.setting.bluetooth.BluetoothFragment;
-import com.dspread.pos.ui.setting.uart.UartFragment;
-import com.dspread.pos.ui.setting.usb.USBFragment;
+import com.dspread.pos.ui.setting.connection.bluetooth.BluetoothFragment;
+import com.dspread.pos.ui.setting.connection.uart.UartFragment;
+import com.dspread.pos.ui.setting.connection.usb.USBFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 public class ViewPagerGroupFragment extends BasePagerFragment implements TitleProvider {
     @Override
     public String getTitle() {
-        return "Setting";
+        return "Connection";
     }
 
     @Override

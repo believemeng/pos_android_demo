@@ -23,6 +23,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import me.goldze.mvvmhabit.utils.SPUtils;
+
 public class LogFileConfig {
     public  File logFileWR = null;
 
@@ -130,6 +132,7 @@ public class LogFileConfig {
                         "customLog_" + file.getName() + "_" + i,
                         JSON.toJSONString(map));
             }
+            CrashReport.putUserData(mContext,"POSID", SPUtils.getInstance().getString("posID"));
 
             // 设置场景标签
             CrashReport.setUserSceneTag(mContext, 90001);

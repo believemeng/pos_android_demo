@@ -2,13 +2,13 @@
 <layout>
 
     <data>
-        <import type="com.dspread.pos.ui.setting.ConnectionViewModel" />
+        <import type="com.dspread.pos.ui.setting.connection.ConnectionViewModel" />
         <import type="me.goldze.mvvmhabit.binding.viewadapter.recyclerview.LayoutManagers" />
         <import type="me.goldze.mvvmhabit.binding.viewadapter.recyclerview.LineManagers" />
         <import type="android.view.View" />
         <variable
             name="viewModel"
-            type="com.dspread.pos.ui.setting.ConnectionViewModel" />
+            type="com.dspread.pos.ui.setting.connection.ConnectionViewModel" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
