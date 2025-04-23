@@ -14,6 +14,16 @@ import com.dspread.pos_new_android_app.BuildConfig;
 import com.dspread.pos_new_android_app.R;
 import com.dspread.xpos.QPOSService;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.tencent.raft.standard.storage.IRStorage;
+import com.tencent.rdelivery.DependencyInjector;
+import com.tencent.rdelivery.RDelivery;
+import com.tencent.rdelivery.RDeliverySetting;
+import com.tencent.rdelivery.dependencyimpl.HandlerTask;
+import com.tencent.rdelivery.dependencyimpl.HttpsURLConnectionNetwork;
+import com.tencent.rdelivery.dependencyimpl.MmkvStorage;
+import com.tencent.rdelivery.dependencyimpl.SystemLog;
+import com.tencent.upgrade.bean.UpgradeConfig;
+import com.tencent.upgrade.core.UpgradeManager;
 
 import me.goldze.mvvmhabit.base.BaseApplication;
 import me.goldze.mvvmhabit.crash.CaocConfig;
@@ -35,6 +45,7 @@ public class MyBaseApplication extends BaseApplication {
         instance = this;
         initCrash();
         initBugly();
+        initShiply();
         // 初始化Fragment缓存
         FragmentCacheManager.getInstance();
         TRACE.setContext(this);
@@ -98,5 +109,22 @@ public class MyBaseApplication extends BaseApplication {
         CrashReport.setUserSceneTag(context, 9527); // 设置标签
         CrashReport.putUserData(context, "deviceModel", Build.MODEL);
         CrashReport.putUserData(context, "deviceManufacturer", Build.MANUFACTURER);
+    }
+
+    private void initShiply(){
+        UpgradeConfig.Builder builder = new UpgradeConfig.Builder();
+        UpgradeConfig config = builder.appId("592313ecc0").appKey("bd73c4b1-4d6f-4739-bf16-dd7acea9c3ce")
+                .cacheExpireTime(1000 * 60 * 60 * 6) // 灰度策略的缓存时长（ms），如果不设置，默认缓存时长为1天
+                .build();
+        UpgradeManager.getInstance().init(this, config);
+
+        // 初始化 Shiply
+        ShiplyConfig config = new ShiplyConfig.Builder()
+                .setAppKey("你的AppKey")
+                .setAppSecret("你的AppSecret")
+                .setChannel("official")
+                .build();
+
+        Shiply.init(this, config);
     }
 }

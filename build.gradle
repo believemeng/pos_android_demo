@@ -5,6 +5,7 @@ buildscript {
         google()
         jcenter()
         maven { url "https://bugly.qq.com/maven/" }
+        maven { url "https://tencent-tds-maven.pkg.coding.net/repository/shiply/repo" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.4.0'
@@ -18,13 +19,6 @@ buildscript {
     }
 }
 
-//allprojects {
-//    repositories {
-//        google()
-//        jcenter()
-//        maven { url 'https://jitpack.io' }
-//    }
-//}
 
 task clean(type: Delete) {
     delete rootProject.buildDir

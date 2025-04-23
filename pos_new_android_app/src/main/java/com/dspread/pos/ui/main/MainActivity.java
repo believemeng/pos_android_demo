@@ -37,6 +37,8 @@ import com.dspread.pos_new_android_app.BR;
 import com.dspread.pos_new_android_app.R;
 import com.dspread.pos_new_android_app.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationView;
+import com.tencent.upgrade.core.DefaultUpgradeStrategyRequestCallback;
+import com.tencent.upgrade.core.UpgradeManager;
 
 import java.util.Hashtable;
 
@@ -132,8 +134,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 String packageVersionName = DevUtils.getPackageVersionName(MainActivity.this, "com.dspread.pos_new_android_app");
                 tvAppVersion.setText(getString(R.string.app_version) + packageVersionName);
                 hideKeyboard(drawerView);
+                checkUpdate();
             }
         });
+    }
+
+    private void checkUpdate(){
+        UpgradeManager.getInstance().checkUpgrade(true, null, new DefaultUpgradeStrategyRequestCallback());
     }
 
     @Override
