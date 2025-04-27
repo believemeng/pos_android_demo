@@ -28,6 +28,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 
 
+import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.posAPI.MyCustomQPOSCallback;
 import com.dspread.pos.common.manager.QPOSCallbackManager;
 import com.dspread.pos.utils.DevUtils;
@@ -147,6 +148,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     protected void onDestroy() {
         super.onDestroy();
         QPOSCallbackManager.getInstance().unregisterCallback(MyCustomQPOSCallback.class);
+        TRACE.i("main is onDestroy");
+        SPUtils.getInstance().put("isConnected",false);
+        SPUtils.getInstance().put("device_type", "");
     }
 
     @Override
@@ -206,6 +210,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     public void onRequestQposConnected() {
         MyCustomQPOSCallback.super.onRequestQposConnected();
         SPUtils.getInstance().put("isConnected",true);
+        SPUtils.getInstance().put("device_type", POS_TYPE.UART.name());
         if(viewModel.pos != null){
            Hashtable<String, Object> posIdTable = viewModel.pos.syncGetQposId(5);
             String posId = posIdTable.get("posId") == null ? "" : (String) posIdTable.get("posId");

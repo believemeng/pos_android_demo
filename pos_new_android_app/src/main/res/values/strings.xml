@@ -367,7 +367,7 @@
     <string name="button_send_instruction">Send</string>
     <string name="str_openimg">open picture </string>
     <string name="str_autoprint">Auto Print</string>
-    <string name="str_connect">connect</string>
+    <string name="str_connect">Connect</string>
     <string name="str_disconnect">disconnect</string>
 
     <string name="text_alignment">text alignment</string>
@@ -531,5 +531,5 @@
     <string name="reset_to_default">Reset to Default</string>
     <string name="save_success">Configuration saved successfully</string>
     <string name="reset_success">Configuration reset to default</string>
-
+    <string name="currency_code">Currency Code</string>
 </resources>

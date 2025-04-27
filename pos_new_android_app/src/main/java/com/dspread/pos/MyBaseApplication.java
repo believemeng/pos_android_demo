@@ -118,13 +118,5 @@ public class MyBaseApplication extends BaseApplication {
                 .build();
         UpgradeManager.getInstance().init(this, config);
 
-        // 初始化 Shiply
-        ShiplyConfig config = new ShiplyConfig.Builder()
-                .setAppKey("你的AppKey")
-                .setAppSecret("你的AppSecret")
-                .setChannel("official")
-                .build();
-
-        Shiply.init(this, config);
     }
 }

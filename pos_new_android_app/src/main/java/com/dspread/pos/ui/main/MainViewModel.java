@@ -18,6 +18,7 @@ import com.dspread.pos.ui.printer.PrinterHelperFragment;
 import com.dspread.pos.ui.scan.ScanFragment;
 import com.dspread.pos.ui.setting.configuration.ConfigurationFragment;
 import com.dspread.pos.ui.setting.connection.ViewPagerGroupFragment;
+import com.dspread.pos.ui.setting.connection_settings.ConnectionSettingsFragment;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_new_android_app.R;
@@ -119,14 +120,12 @@ public class MainViewModel extends BaseViewModel {
         switch (itemId) {
             case R.id.nav_home:
                 return new HomeFragment();
-            case R.id.nav_connection:
-                return new ViewPagerGroupFragment();
+            case R.id.nav_setting:
+                return new ConnectionSettingsFragment();
             case R.id.nav_printer:
                 return new PrinterHelperFragment();
             case R.id.nav_scan:
                 return new ScanFragment();
-            case R.id.nav_configuration:
-                return new ConfigurationFragment();
         }
 
         return null;

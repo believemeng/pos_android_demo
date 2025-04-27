@@ -8,6 +8,21 @@
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
+    <!-- Android 12 及以上版本所需权限 -->
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation"
+        tools:targetApi="s" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+
+    <!-- 位置权限 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+
     <application
         android:name="com.dspread.pos.MyBaseApplication"
         android:allowBackup="true"
@@ -61,6 +76,10 @@
         <activity
             android:name="com.dspread.pos.ui.printer.activities.PrinterStatusActivity"
             android:exported="false" />
+        <activity
+            android:name="com.dspread.pos.ui.setting.device_selection.DeviceSelectionActivity"
+            android:exported="false"
+            />
     </application>
 
 </manifest>
