@@ -80,7 +80,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             viewModel.setAmount(amount);
         }
 
-        POSCommand.getInstance().setQPOSService(MyBaseApplication.getQposService());
         startTransaction();
     }
 

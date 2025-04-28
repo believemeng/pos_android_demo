@@ -6,9 +6,13 @@ import androidx.annotation.NonNull;
 import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
 
+import com.dspread.pos.MyBaseApplication;
 import com.dspread.pos.common.enums.POS_TYPE;
+import com.dspread.pos.posAPI.POSCommand;
 import com.dspread.pos_new_android_app.R;
+import com.dspread.xpos.QPOSService;
 
+import me.goldze.mvvmhabit.base.BaseApplication;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
@@ -17,7 +21,7 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class ConnectionSettingsViewModel extends BaseViewModel {
     // 当前连接的设备名称
-    public final ObservableField<String> deviceName = new ObservableField<>("UART");
+    public final ObservableField<String> deviceName = new ObservableField<>("No device");
     
     // 设备连接状态
     public final ObservableBoolean deviceConnected = new ObservableBoolean(false);
@@ -42,22 +46,36 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
     
     // 事件：货币代码点击
     public final SingleLiveEvent<Void> currencyCodeClickEvent = new SingleLiveEvent<>();
+    private MyBaseApplication baseApplication;
+    private POS_TYPE currentPOSType;
 
     public ConnectionSettingsViewModel(@NonNull Application application) {
         super(application);
         loadSettings();
+        if(baseApplication == null){
+            baseApplication = (MyBaseApplication) BaseApplication.getInstance();
+        }
     }
 
     /**
      * 从SharedPreferences加载设置
      */
-    private void loadSettings() {
+    public void loadSettings() {
         // 加载设备连接状态
         deviceConnected.set(SPUtils.getInstance().getBoolean("isConnected", false));
         
         // 加载设备名称
-        String savedDeviceName = SPUtils.getInstance().getString("device_type", "UART");
-        deviceName.set(savedDeviceName);
+        String savedDeviceName = SPUtils.getInstance().getString("device_type", "");
+        if(!"".equals(savedDeviceName)){
+            deviceName.set(savedDeviceName);
+            if(savedDeviceName.equals(POS_TYPE.UART.name())){
+                currentPOSType = POS_TYPE.UART;
+            }else if(savedDeviceName.equals(POS_TYPE.USB.name())){
+                currentPOSType = POS_TYPE.USB;
+            }else {
+                currentPOSType = POS_TYPE.BLUETOOTH;
+            }
+        }
         
         // 加载交易类型
         String savedTransType = SPUtils.getInstance().getString("transType", "GOODS");
@@ -77,10 +95,10 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
      */
     public void saveSettings() {
         // 保存设备连接状态
-        SPUtils.getInstance().put("device_connected", deviceConnected.get());
+        SPUtils.getInstance().put("isConnected", deviceConnected.get());
         
         // 保存设备名称
-        SPUtils.getInstance().put("device_name", deviceName.get());
+        SPUtils.getInstance().put("device_type", deviceName.get());
         
         // 保存交易类型
         SPUtils.getInstance().put("transType", transactionType.get());
@@ -92,9 +110,9 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
         SPUtils.getInstance().put("currencyCode", currencyCode.get());
         
         // 保存连接类型
-        SPUtils.getInstance().put("ConnectionType", deviceConnected.get() ? POS_TYPE.BLUETOOTH.name() : "");
+//        SPUtils.getInstance().put("ConnectionType", deviceConnected.get() ? POS_TYPE.BLUETOOTH.name() : "");
         
-        ToastUtils.showShort("设置已保存");
+//        ToastUtils.showShort("设置已保存");
     }
 
     /**
@@ -102,6 +120,23 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
      */
     public BindingCommand toggleDeviceCommand = new BindingCommand(() -> {
         deviceConnected.set(!deviceConnected.get());
+        String deviceType = SPUtils.getInstance().getString("device_type", "");
+        if(!"".equals(deviceType)){
+            if(deviceConnected.get()){
+                if(POS_TYPE.BLUETOOTH.name().equals(deviceType)){
+                    baseApplication.open(QPOSService.CommunicationMode.BLUETOOTH, getApplication());
+                    POSCommand.getInstance().connectBluetoothDevice(true,25,SPUtils.getInstance().getString("device_name",""));
+                }else if(POS_TYPE.UART.name().equals(deviceType)){
+                    baseApplication.open(QPOSService.CommunicationMode.UART, getApplication());
+                    POSCommand.getInstance().setDeviceAddress("/dev/ttyS1");
+                    POSCommand.getInstance().openUart();
+                }else {
+                    selectDeviceEvent.call();
+                }
+            }else {
+                POSCommand.getInstance().close(currentPOSType);
+            }
+        }
         saveSettings();
     });
 

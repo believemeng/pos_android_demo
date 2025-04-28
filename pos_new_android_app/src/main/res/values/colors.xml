@@ -182,4 +182,7 @@
     <color name="confirm_button_text">#FFFFFF</color>
     <color name="number_button_text">#333333</color>
     <color name="amount_text_color">#1A1A1A</color>
+
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
 </resources>

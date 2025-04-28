@@ -136,7 +136,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         // 如果不是蓝牙连接，直接返回结果
         if (posType == POS_TYPE.BLUETOOTH) {
             resultIntent.putExtra(EXTRA_DEVICE_NAME, viewModel.bluetoothName.get());
-            resultIntent.putExtra(EXTRA_CONNECTION_TYPE, posType.name());
+            SPUtils.getInstance().put("device_name",viewModel.bluetoothAddress.get());
         }
         resultIntent.putExtra(EXTRA_CONNECTION_TYPE, posType.name());
         // 设置结果并关闭Activity
@@ -243,8 +243,11 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     @Override
     public void onRequestQposConnected() {
         runOnUiThread(() -> {
+            viewModel.isConnecting.set(false);
+            currentPOSType = viewModel.posTypes[viewModel.selectedIndex.getValue()];
             viewModel.connectionMethodSelectedEvent.setValue(currentPOSType);
             viewModel.currentPOSType = viewModel.posTypes[viewModel.selectedIndex.getValue()];
+            viewModel.connectedDeviceName = viewModel.currentPOSType.name();
             SPUtils.getInstance().put("device_type",viewModel.currentPOSType.name());
         });
     }
@@ -253,7 +256,34 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     public void onRequestQposDisconnected() {
         SPUtils.getInstance().put("device_type","");
         SPUtils.getInstance().put("isConnected",false);
-        viewModel.connectBtnTitle.set(getString(R.string.str_connect));
+        runOnUiThread(() -> {
+            try {
+                viewModel.isConnecting.set(false);
+                SPUtils.getInstance().put("device_name","");
+                if(viewModel.currentPOSType == viewModel.posTypes[viewModel.selectedIndex.getValue()]){
+                    // 设置ViewAdapter的isClearing为true，防止触发onCheckedChanged事件
+                    binding.radioGroupConnection.clearCheck();
+                    viewModel.connectedDeviceName = null;
+                    viewModel.selectedIndex.setValue(-1);
+                    viewModel.connectBtnTitle.set(getString(R.string.str_connect));
+                    viewModel.currentPOSType = null;
+                    // 现在可以安全地调用clearCheck()
+                }
+            } catch (Exception e) {
+                // 捕获并记录异常
+                e.printStackTrace();
+
+            }
+        });
+    }
+
+    @Override
+    public void onRequestNoQposDetected() {
+        MyCustomQPOSCallback.super.onRequestNoQposDetected();
+        runOnUiThread(() -> {
+            viewModel.isConnecting.set(false);
+            SPUtils.getInstance().put("device_name","");
+        });
     }
 
     @Override

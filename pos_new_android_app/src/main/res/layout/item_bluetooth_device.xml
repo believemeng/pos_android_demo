@@ -11,7 +11,6 @@
         android:id="@+id/img_device"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:src="@drawable/ic_bluetooth_printer"
         android:tint="#2196F3"
         android:layout_marginEnd="16dp" />
 

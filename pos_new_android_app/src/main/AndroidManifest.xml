@@ -80,6 +80,9 @@
             android:name="com.dspread.pos.ui.setting.device_selection.DeviceSelectionActivity"
             android:exported="false"
             />
+        <activity
+            android:name="com.dspread.pos.ui.setting.currency.CurrencySelectionActivity"
+            android:exported="false"/>
     </application>
 
 </manifest>

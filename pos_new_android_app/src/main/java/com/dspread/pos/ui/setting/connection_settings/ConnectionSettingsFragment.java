@@ -12,7 +12,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.ui.base.TitleProvider;
+import com.dspread.pos.ui.setting.currency.CurrencySelectionActivity;
 import com.dspread.pos.ui.setting.device_selection.DeviceSelectionActivity;
+import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_new_android_app.BR;
 import com.dspread.pos_new_android_app.R;
 import com.dspread.pos_new_android_app.databinding.FragmentConnectionSettingsBinding;
@@ -21,6 +23,7 @@ import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionSettingsBinding, ConnectionSettingsViewModel> implements TitleProvider {
+    private final int REQUEST_CODE_CURRENCY = 1000;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -66,7 +69,9 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
 
         // 货币代码点击事件
         viewModel.currencyCodeClickEvent.observe(this, v -> {
-            showCurrencyCodeDialog();
+//            showCurrencyCodeDialog();
+            Intent intent = new Intent(getActivity(), CurrencySelectionActivity.class);
+            startActivityForResult(intent, REQUEST_CODE_CURRENCY);
         });
     }
 
@@ -107,7 +112,12 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
                 viewModel.saveSettings();
             }
 
-            ToastUtils.showShort("已选择设备: " + deviceName);
+            ToastUtils.showShort("Selected Devices " + deviceName);
+        }else if(requestCode == REQUEST_CODE_CURRENCY && resultCode == Activity.RESULT_OK && data != null){
+            String currencyCode = data.getStringExtra("currency_code");
+            TRACE.i("currency code = "+currencyCode);
+        }else {
+            viewModel.loadSettings();
         }
     }
 

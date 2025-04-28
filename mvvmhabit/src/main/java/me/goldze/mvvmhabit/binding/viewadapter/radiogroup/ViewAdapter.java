@@ -17,7 +17,11 @@ public class ViewAdapter {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
                 RadioButton radioButton = (RadioButton) group.findViewById(checkedId);
-                bindingCommand.execute(radioButton.getText().toString());
+                if(radioButton != null && radioButton.getText() != null) {
+                    bindingCommand.execute(radioButton.getText().toString());
+                }else {
+                    bindingCommand.execute("");
+                }
             }
         });
     }

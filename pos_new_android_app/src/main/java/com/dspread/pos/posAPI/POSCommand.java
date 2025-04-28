@@ -1,6 +1,10 @@
 package com.dspread.pos.posAPI;
 
+import android.content.Context;
+
+import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.common.enums.TransCardMode;
+import com.dspread.pos.utils.TRACE;
 import com.dspread.xpos.QPOSService;
 
 import java.util.Hashtable;
@@ -23,6 +27,33 @@ public class POSCommand {
 
     public void setQPOSService(QPOSService pos){
         this.pos = pos;
+    }
+
+    public void setDeviceAddress(String address){
+        pos.setDeviceAddress(address);
+    }
+
+    public void openUart(){
+        pos.openUart();
+    }
+
+    public void scanQPos2Mode(Context context, long time){
+        pos.scanQPos2Mode(context,time);
+    }
+    public void stopScanQPos2Mode(){
+        pos.stopScanQPos2Mode();
+    }
+
+    public void stopScanQposBLE(){
+        pos.stopScanQposBLE();
+    }
+
+    public void connectBLE(String deviceAddress){
+        pos.connectBLE(deviceAddress);
+    }
+
+    public void connectBluetoothDevice(boolean isAutoBind, int time, String deviceAddress){
+        pos.connectBluetoothDevice(isAutoBind,time,deviceAddress);
     }
     public void setCardTradeMode(){
         String modeName = SPUtils.getInstance().getString("cardTradeMode");
@@ -95,5 +126,20 @@ public class POSCommand {
 
     public Hashtable<String, String> anlysEmvIccData(String tlv){
         return pos.anlysEmvIccData(tlv);
+    }
+
+    public void close(POS_TYPE posType) {
+        TRACE.d("start close");
+        if (pos == null || posType == null) {
+            TRACE.d("return close");
+        } else if (posType == POS_TYPE.BLUETOOTH) {
+            pos.disconnectBT();
+        } else if (posType == POS_TYPE.BLUETOOTH_BLE) {
+            pos.disconnectBLE();
+        } else if (posType == POS_TYPE.UART) {
+            pos.closeUart();
+        } else if (posType == POS_TYPE.USB) {
+            pos.closeUsb();
+        }
     }
 }

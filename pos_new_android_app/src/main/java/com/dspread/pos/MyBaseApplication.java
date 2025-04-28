@@ -7,6 +7,7 @@ import android.os.Handler;
 
 import com.dspread.pos.posAPI.MyQposClass;
 import com.dspread.pos.common.manager.FragmentCacheManager;
+import com.dspread.pos.posAPI.POSCommand;
 import com.dspread.pos.ui.main.MainActivity;
 import com.dspread.pos.utils.DevUtils;
 import com.dspread.pos.utils.TRACE;
@@ -70,6 +71,7 @@ public class MyBaseApplication extends BaseApplication {
         pos.setD20Trade(true);
         pos.setContext(this);
         pos.initListener(listener);
+        POSCommand.getInstance().setQPOSService(pos);
     }
 
     private void initCrash() {
