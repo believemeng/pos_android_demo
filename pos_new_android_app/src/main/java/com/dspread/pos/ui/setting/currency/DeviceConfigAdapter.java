@@ -14,7 +14,7 @@ import com.dspread.pos_new_android_app.databinding.ItemCurrencyBinding;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHolder> {
+public class DeviceConfigAdapter extends RecyclerView.Adapter<DeviceConfigAdapter.ViewHolder> {
     private List<CurrencyItem> currencyList = new ArrayList<>();
     private OnCurrencyClickListener listener;
 
@@ -22,7 +22,7 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
         void onCurrencyClick(CurrencyItem item);
     }
 
-    public CurrencyAdapter(OnCurrencyClickListener listener) {
+    public DeviceConfigAdapter(OnCurrencyClickListener listener) {
         this.listener = listener;
     }
 

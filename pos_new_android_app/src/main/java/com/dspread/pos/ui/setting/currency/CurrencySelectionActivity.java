@@ -57,7 +57,7 @@ public class CurrencySelectionActivity extends BaseActivity<ActivityCurrencySele
         });
         
         // 设置RecyclerView适配器
-        CurrencyAdapter adapter = new CurrencyAdapter(item -> {
+        DeviceConfigAdapter adapter = new DeviceConfigAdapter(item -> {
             Intent resultIntent = new Intent();
             if (currentType == TYPE_CURRENCY) {
                 SPUtils.getInstance().put("currencyCode",item.getNumericCode());
@@ -88,21 +88,21 @@ public class CurrencySelectionActivity extends BaseActivity<ActivityCurrencySele
         });
     }
 
-    private void handleCardModeList(List<CurrencyItem> items, CurrencyAdapter adapter) {
+    private void handleCardModeList(List<CurrencyItem> items, DeviceConfigAdapter adapter) {
         String savedCardMode = SPUtils.getInstance().getString("cardMode", "");
         sortAndSetItems(items, adapter, savedCardMode);
     }
-    private void handleCurrencyList(List<CurrencyItem> items, CurrencyAdapter adapter) {
+    private void handleCurrencyList(List<CurrencyItem> items, DeviceConfigAdapter adapter) {
         int savedCode = SPUtils.getInstance().getInt("currencyCode", 0);
         sortAndSetItems(items, adapter, savedCode);
     }
 
-    private void handleTransactionList(List<CurrencyItem> items, CurrencyAdapter adapter) {
+    private void handleTransactionList(List<CurrencyItem> items, DeviceConfigAdapter adapter) {
         String savedType = SPUtils.getInstance().getString("transactionType", "");
         sortAndSetItems(items, adapter, savedType);
     }
 
-    private void sortAndSetItems(List<CurrencyItem> items, CurrencyAdapter adapter, Object savedValue) {
+    private void sortAndSetItems(List<CurrencyItem> items, DeviceConfigAdapter adapter, Object savedValue) {
         if (savedValue != null && !savedValue.toString().isEmpty() && !"0".equals(savedValue.toString())) {
             CurrencyItem selectedItem = null;
             for (CurrencyItem item : items) {
