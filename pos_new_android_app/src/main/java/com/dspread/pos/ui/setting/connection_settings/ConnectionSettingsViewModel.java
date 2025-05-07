@@ -79,14 +79,26 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
         
         // 加载交易类型
         String savedTransType = SPUtils.getInstance().getString("transactionType", "");
+        if (savedTransType == null || "".equals(savedTransType)) {
+            SPUtils.getInstance().put("transactionType","GOODS");
+            savedTransType = "GOODS";
+        }
         transactionType.set(savedTransType);
         
         // 加载卡片模式
         String savedCardMode = SPUtils.getInstance().getString("cardMode", "");
+        if (savedCardMode == null || "".equals(savedCardMode)) {
+            SPUtils.getInstance().put("cardMode","SWIPE_TAP_INSERT_CARD_NOTUP");
+            savedCardMode = "SWIPE_TAP_INSERT_CARD_NOTUP";
+        }
         cardMode.set(savedCardMode);
         
         // 加载货币代码
         String savedCurrencyCode = SPUtils.getInstance().getString("currencyName", "");
+        if (savedCurrencyCode == null || "".equals(savedCurrencyCode)) {
+            SPUtils.getInstance().put("currencyCode",156);
+            savedCurrencyCode = "CNY";
+        }
         currencyCode.set(savedCurrencyCode);
     }
 
@@ -99,19 +111,6 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
         
         // 保存设备名称
         SPUtils.getInstance().put("device_type", deviceName.get());
-        
-        // 保存交易类型
-        SPUtils.getInstance().put("transactionType", transactionType.get());
-        
-        // 保存卡片模式
-        SPUtils.getInstance().put("cardMode", cardMode.get());
-        
-        // 保存货币代码
-        SPUtils.getInstance().put("currencyName", currencyCode.get());
-        
-        // 保存连接类型
-//        SPUtils.getInstance().put("ConnectionType", deviceConnected.get() ? POS_TYPE.BLUETOOTH.name() : "");
-
     }
 
     /**
@@ -172,30 +171,6 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
      */
     public void updateDeviceName(String name) {
         deviceName.set(name);
-        saveSettings();
-    }
-
-    /**
-     * 更新交易类型
-     */
-    public void updateTransactionType(String type) {
-        transactionType.set(type);
-        saveSettings();
-    }
-
-    /**
-     * 更新卡片模式
-     */
-    public void updateCardMode(String mode) {
-        cardMode.set(mode);
-        saveSettings();
-    }
-
-    /**
-     * 更新货币代码
-     */
-    public void updateCurrencyCode(String code) {
-        currencyCode.set(code);
         saveSettings();
     }
 }

@@ -43,7 +43,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     private String transactionTypeString;
     private String cashbackAmounts;
     private QPOSService.TransactionType transactionType;
-    private QPOSService pos;
     private KeyboardUtil keyboardUtil;
     private boolean isChangePin = false;
     private int timeOfPinInput;
@@ -71,8 +70,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         Intent intent = getIntent();
         if (intent != null) {
             amount = intent.getStringExtra("amount");
-            if(SPUtils.getInstance().getString("transType") != null && !"".equals(SPUtils.getInstance().getString("transType"))){
-                transactionTypeString = SPUtils.getInstance().getString("transType");
+            if(SPUtils.getInstance().getString("transactionType") != null && !"".equals(SPUtils.getInstance().getString("transactionType"))){
+                transactionTypeString = SPUtils.getInstance().getString("transactionType");
             }else {
                 transactionTypeString = "GOODS";
             }
@@ -165,7 +164,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             } else if (transactionTypeString.equals("SALES_NEW")) {
                 transactionType = QPOSService.TransactionType.SALES_NEW;
             }
-            POSCommand.getInstance().setAmount(amount, cashbackAmounts, "643", transactionType);
+            int currencyCode = SPUtils.getInstance().getInt("currencyCode");
+            POSCommand.getInstance().setAmount(amount, cashbackAmounts, String.valueOf(currencyCode), transactionType);
         }
     }
 
@@ -225,7 +225,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (pos != null) {
+                if (POSCommand.getInstance().pos != null) {
                     viewModel.stopLoading();
                     viewModel.showPinpad.set(true);
                     boolean onlinePin = POSCommand.getInstance().isOnlinePin();
@@ -255,11 +255,11 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                     }
                 }
                 MyKeyboardView.setKeyBoardListener(value -> {
-                    if (pos != null) {
+                    if (POSCommand.getInstance().pos != null) {
                         POSCommand.getInstance().pinMapSync(value, 20);
                     }
                 });
-                if (pos != null) {
+                if (POSCommand.getInstance().pos != null) {
                     keyboardUtil = new KeyboardUtil(PaymentActivity.this, binding.scvText, dataList);
                     keyboardUtil.initKeyboard(MyKeyboardView.KEYBOARDTYPE_Only_Num_Pwd, binding.pinpadEditText);//Random keyboard
                 }
@@ -290,7 +290,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             public void run() {
                 viewModel.titleText.set(getString(R.string.input_pin));
                 pinPadDialog = new PinPadDialog(PaymentActivity.this);
-                pinPadDialog.getPayViewPass().setRandomNumber(true).setPayClickListener(pos, new PinPadView.OnPayClickListener() {
+                pinPadDialog.getPayViewPass().setRandomNumber(true).setPayClickListener(POSCommand.getInstance().pos, new PinPadView.OnPayClickListener() {
 
                     @Override
                     public void onCencel() {
@@ -336,7 +336,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 viewModel.showPinpad.set(false);
                 String cardNo = "";
                 String msg = "";
-                if (pos == null) {
+                if (POSCommand.getInstance().pos == null) {
                     msg = "Pls open device";
                     viewModel.setTransactionFailed(msg);
                     return;
