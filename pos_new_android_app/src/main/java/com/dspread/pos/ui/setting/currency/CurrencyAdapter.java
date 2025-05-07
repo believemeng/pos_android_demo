@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_new_android_app.R;
 import com.dspread.pos_new_android_app.databinding.ItemCurrencyBinding;
 
@@ -62,6 +63,7 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
     }
 
     public void setItems(List<CurrencyItem> items) {
+        TRACE.d("setItems size: " + (items != null ? items.size() : 0));
         this.currencyList.clear();
         this.currencyList.addAll(items);
         notifyDataSetChanged();

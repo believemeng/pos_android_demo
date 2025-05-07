@@ -27,13 +27,13 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
     public final ObservableBoolean deviceConnected = new ObservableBoolean(false);
     
     // 当前交易类型
-    public final ObservableField<String> transactionType = new ObservableField<>("GOODS");
+    public final ObservableField<String> transactionType = new ObservableField<>("");
     
     // 当前卡片模式
-    public final ObservableField<String> cardMode = new ObservableField<>("SWIPE_TAP_INSERT_CARD");
+    public final ObservableField<String> cardMode = new ObservableField<>("");
     
     // 当前货币代码
-    public final ObservableField<String> currencyCode = new ObservableField<>("CNY");
+    public final ObservableField<String> currencyCode = new ObservableField<>("");
     
     // 事件：选择设备
     public final SingleLiveEvent<Void> selectDeviceEvent = new SingleLiveEvent<>();
@@ -78,15 +78,15 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
         }
         
         // 加载交易类型
-        String savedTransType = SPUtils.getInstance().getString("transType", "GOODS");
+        String savedTransType = SPUtils.getInstance().getString("transactionType", "");
         transactionType.set(savedTransType);
         
         // 加载卡片模式
-        String savedCardMode = SPUtils.getInstance().getString("cardMode", "SWIPE_TAP_INSERT_CARD");
+        String savedCardMode = SPUtils.getInstance().getString("cardMode", "");
         cardMode.set(savedCardMode);
         
         // 加载货币代码
-        String savedCurrencyCode = SPUtils.getInstance().getString("currencyCode", "CNY");
+        String savedCurrencyCode = SPUtils.getInstance().getString("currencyName", "");
         currencyCode.set(savedCurrencyCode);
     }
 
@@ -101,18 +101,17 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
         SPUtils.getInstance().put("device_type", deviceName.get());
         
         // 保存交易类型
-        SPUtils.getInstance().put("transType", transactionType.get());
+        SPUtils.getInstance().put("transactionType", transactionType.get());
         
         // 保存卡片模式
         SPUtils.getInstance().put("cardMode", cardMode.get());
         
         // 保存货币代码
-        SPUtils.getInstance().put("currencyCode", currencyCode.get());
+        SPUtils.getInstance().put("currencyName", currencyCode.get());
         
         // 保存连接类型
 //        SPUtils.getInstance().put("ConnectionType", deviceConnected.get() ? POS_TYPE.BLUETOOTH.name() : "");
-        
-//        ToastUtils.showShort("设置已保存");
+
     }
 
     /**

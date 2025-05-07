@@ -56,8 +56,9 @@ public class POSCommand {
         pos.connectBluetoothDevice(isAutoBind,time,deviceAddress);
     }
     public void setCardTradeMode(){
-        String modeName = SPUtils.getInstance().getString("cardTradeMode");
+        String modeName = SPUtils.getInstance().getString("cardMode");
         QPOSService.CardTradeMode mode = TransCardMode.valueOf(modeName).getCardTradeModeValue();
+        TRACE.i("card mode = "+mode);
         pos.setCardTradeMode(mode);
     }
     public void doTrade(int timeout){

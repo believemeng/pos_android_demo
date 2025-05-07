@@ -47,7 +47,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     // 结果常量
     public static final String EXTRA_DEVICE_NAME = "device_name";
     public static final String EXTRA_CONNECTION_TYPE = "connection_type";
-    public static final int REQUEST_CODE_SELECT_DEVICE = 1001;
+    public static final int REQUEST_CODE_SELECT_DEVICE = 10001;
     private BluetoothDeviceAdapter bluetoothAdapter;
     private AlertDialog bluetoothDevicesDialog;
     private RecyclerView recyclerView;

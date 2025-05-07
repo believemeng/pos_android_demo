@@ -4,12 +4,14 @@ public class CurrencyItem {
     private String code;
     private String name;
     private int flagResId;
+    private int numericCode;
     private boolean selected;
 
-    public CurrencyItem(String code, String name, int flagResId) {
+    public CurrencyItem(String code, String name, int flagResId, int numericCode) {
         this.code = code;
         this.name = name;
         this.flagResId = flagResId;
+        this.numericCode = numericCode;
     }
 
     // Getter and Setter methods
@@ -18,4 +20,6 @@ public class CurrencyItem {
     public int getFlagResId() { return flagResId; }
     public boolean isSelected() { return selected; }
     public void setSelected(boolean selected) { this.selected = selected; }
+
+    public int getNumericCode() { return numericCode; }
 }

@@ -20,10 +20,13 @@ import com.dspread.pos_new_android_app.R;
 import com.dspread.pos_new_android_app.databinding.FragmentConnectionSettingsBinding;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
+import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionSettingsBinding, ConnectionSettingsViewModel> implements TitleProvider {
     private final int REQUEST_CODE_CURRENCY = 1000;
+    private final int REQUEST_TRANSACTION_TYPE = 1001;
+    private final int REQUEST_CARD_MODE = 1002;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -59,18 +62,26 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
 
         // 交易类型点击事件
         viewModel.transactionTypeClickEvent.observe(this, v -> {
-            showTransactionTypeDialog();
+            Intent intent = new Intent(getActivity(), CurrencySelectionActivity.class);
+            intent.putExtra(CurrencySelectionActivity.EXTRA_LIST_TYPE,
+                    CurrencySelectionActivity.TYPE_TRANSACTION);
+            startActivityForResult(intent, REQUEST_TRANSACTION_TYPE);
         });
 
         // 卡片模式点击事件
         viewModel.cardModeClickEvent.observe(this, v -> {
-            showCardModeDialog();
+            Intent intent = new Intent(getActivity(), CurrencySelectionActivity.class);
+            intent.putExtra(CurrencySelectionActivity.EXTRA_LIST_TYPE,
+                    CurrencySelectionActivity.TYPE_CARD_MODE);
+            startActivityForResult(intent, REQUEST_CARD_MODE);
         });
 
         // 货币代码点击事件
         viewModel.currencyCodeClickEvent.observe(this, v -> {
 //            showCurrencyCodeDialog();
             Intent intent = new Intent(getActivity(), CurrencySelectionActivity.class);
+            intent.putExtra(CurrencySelectionActivity.EXTRA_LIST_TYPE,
+                    CurrencySelectionActivity.TYPE_CURRENCY);
             startActivityForResult(intent, REQUEST_CODE_CURRENCY);
         });
     }
@@ -81,7 +92,6 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
     private void navigateToDeviceSelection() {
         // 创建Intent
         Intent intent = new Intent(getActivity(), DeviceSelectionActivity.class);
-
         // 启动Activity并等待结果
         startActivityForResult(intent, DeviceSelectionActivity.REQUEST_CODE_SELECT_DEVICE);
     }
@@ -89,78 +99,46 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == Activity.RESULT_OK && data != null) {
+            if (requestCode == DeviceSelectionActivity.REQUEST_CODE_SELECT_DEVICE) {
+                // 获取设备名称
+                String deviceName = data.getStringExtra(DeviceSelectionActivity.EXTRA_DEVICE_NAME);
 
-        // 处理设备选择结果
-        if (requestCode == DeviceSelectionActivity.REQUEST_CODE_SELECT_DEVICE && resultCode == Activity.RESULT_OK && data != null) {
-            // 获取设备名称
-            String deviceName = data.getStringExtra(DeviceSelectionActivity.EXTRA_DEVICE_NAME);
+                // 获取连接类型
+                String connectionType = data.getStringExtra(DeviceSelectionActivity.EXTRA_CONNECTION_TYPE);
 
-            // 获取连接类型
-            String connectionType = data.getStringExtra(DeviceSelectionActivity.EXTRA_CONNECTION_TYPE);
+                // 更新设备名称
+                if (deviceName != null) {
+                    viewModel.updateDeviceName(connectionType + "(" + deviceName + ")");
+                } else {
+                    viewModel.updateDeviceName(connectionType);
+                }
 
-            // 更新设备名称
-            if (deviceName != null) {
-                viewModel.updateDeviceName(connectionType+"("+deviceName+")");
+                // 更新设备连接状态
+                if (connectionType != null) {
+                    POS_TYPE posType = POS_TYPE.valueOf(connectionType);
+                    viewModel.deviceConnected.set(posType != null);
+                    viewModel.saveSettings();
+                }
+
+                ToastUtils.showShort("Selected Devices " + deviceName);
+            } else if (requestCode == REQUEST_CODE_CURRENCY) {
+                String currencyName = data.getStringExtra("currency_name");
+                viewModel.currencyCode.set(currencyName);
+                TRACE.i("currency code = " + currencyName);
+            } else if (requestCode == REQUEST_TRANSACTION_TYPE) {
+                String transactionType = data.getStringExtra("transaction_type");
+                viewModel.transactionType.set(transactionType);
+                TRACE.i("transactionType = " + transactionType);
+                // 处理交易类型选择结果
+            }else if(requestCode == REQUEST_CARD_MODE){
+                String cardMode = data.getStringExtra("card_mode");
+                viewModel.cardMode.set(cardMode);
+                TRACE.i("cardMode = " + cardMode);
             }else {
-                viewModel.updateDeviceName(connectionType);
+                viewModel.loadSettings();
             }
-
-            // 更新设备连接状态
-            if (connectionType != null) {
-                POS_TYPE posType = POS_TYPE.valueOf(connectionType);
-                viewModel.deviceConnected.set(posType != null);
-                viewModel.saveSettings();
-            }
-
-            ToastUtils.showShort("Selected Devices " + deviceName);
-        }else if(requestCode == REQUEST_CODE_CURRENCY && resultCode == Activity.RESULT_OK && data != null){
-            String currencyCode = data.getStringExtra("currency_code");
-            TRACE.i("currency code = "+currencyCode);
-        }else {
-            viewModel.loadSettings();
         }
-    }
-
-    /**
-     * 显示交易类型选择对话框
-     */
-    private void showTransactionTypeDialog() {
-        String[] transactionTypes = {"消费", "撤销", "退货", "预授权", "预授权完成", "预授权撤销", "预授权完成撤销"};
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("选择交易类型");
-        builder.setItems(transactionTypes, (dialog, which) -> {
-            viewModel.updateTransactionType(transactionTypes[which]);
-        });
-        builder.show();
-    }
-
-    /**
-     * 显示卡片模式选择对话框
-     */
-    private void showCardModeDialog() {
-        String[] cardModes = {"刷卡+插卡+挥卡", "仅刷卡", "仅插卡", "仅挥卡", "刷卡+插卡", "刷卡+挥卡", "插卡+挥卡"};
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("选择卡片模式");
-        builder.setItems(cardModes, (dialog, which) -> {
-            viewModel.updateCardMode(cardModes[which]);
-        });
-        builder.show();
-    }
-
-    /**
-     * 显示货币代码选择对话框
-     */
-    private void showCurrencyCodeDialog() {
-        String[] currencyCodes = {"CNY", "USD", "EUR", "GBP", "JPY", "HKD"};
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("选择货币代码");
-        builder.setItems(currencyCodes, (dialog, which) -> {
-            viewModel.updateCurrencyCode(currencyCodes[which]);
-        });
-        builder.show();
     }
 
     @Override
