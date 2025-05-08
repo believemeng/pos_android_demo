@@ -81,7 +81,7 @@
             android:exported="false"
             />
         <activity
-            android:name="com.dspread.pos.ui.setting.currency.CurrencySelectionActivity"
+            android:name="com.dspread.pos.ui.setting.device_config.DeviceConfigActivity"
             android:exported="false"/>
     </application>
 

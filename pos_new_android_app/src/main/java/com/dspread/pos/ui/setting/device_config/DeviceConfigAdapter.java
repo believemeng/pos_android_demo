@@ -1,4 +1,4 @@
-package com.dspread.pos.ui.setting.currency;
+package com.dspread.pos.ui.setting.device_config;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -15,11 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DeviceConfigAdapter extends RecyclerView.Adapter<DeviceConfigAdapter.ViewHolder> {
-    private List<CurrencyItem> currencyList = new ArrayList<>();
+    private List<DeviceConfigItem> currencyList = new ArrayList<>();
     private OnCurrencyClickListener listener;
 
     public interface OnCurrencyClickListener {
-        void onCurrencyClick(CurrencyItem item);
+        void onCurrencyClick(DeviceConfigItem item);
     }
 
     public DeviceConfigAdapter(OnCurrencyClickListener listener) {
@@ -40,13 +40,13 @@ public class DeviceConfigAdapter extends RecyclerView.Adapter<DeviceConfigAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        CurrencyItem item = currencyList.get(position);
+        DeviceConfigItem item = currencyList.get(position);
         holder.binding.setCurrency(item);
         holder.binding.executePendingBindings();
         
         holder.itemView.setOnClickListener(v -> {
             // 更新选中状态
-            for (CurrencyItem currency : currencyList) {
+            for (DeviceConfigItem currency : currencyList) {
                 currency.setSelected(currency == item);
             }
             notifyDataSetChanged();
@@ -62,7 +62,7 @@ public class DeviceConfigAdapter extends RecyclerView.Adapter<DeviceConfigAdapte
         return currencyList.size();
     }
 
-    public void setItems(List<CurrencyItem> items) {
+    public void setItems(List<DeviceConfigItem> items) {
         TRACE.d("setItems size: " + (items != null ? items.size() : 0));
         this.currencyList.clear();
         this.currencyList.addAll(items);

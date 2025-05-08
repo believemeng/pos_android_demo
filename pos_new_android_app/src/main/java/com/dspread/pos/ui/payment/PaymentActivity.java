@@ -3,6 +3,8 @@ package com.dspread.pos.ui.payment;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -10,8 +12,6 @@ import android.widget.ListView;
 
 import androidx.lifecycle.Observer;
 
-import com.dspread.pos.MyBaseApplication;
-import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.posAPI.MyCustomQPOSCallback;
 import com.dspread.pos.common.manager.QPOSCallbackManager;
 import com.dspread.pos.posAPI.POSCommand;
@@ -22,6 +22,7 @@ import com.dspread.pos.ui.payment.pinkeyboard.PinPadView;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.LogFileConfig;
 import com.dspread.pos.utils.QPOSUtil;
+import com.dspread.pos.utils.ReceiptGenerator;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_new_android_app.BR;
 import com.dspread.pos_new_android_app.R;
@@ -437,11 +438,11 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                         content += "encPAN: " + encPAN + "\n";
                         content += "trackRandomNumber: " + trackRandomNumber + "\n";
                         content += "pinRandomNumber:" + " " + pinRandomNumber + "\n";
-                        cardNo = maskedPAN;
-                        String realPan = null;
                     }
                     if (content != null && !"".equals(content)) {
-//                        sendRequestToBackend(content);
+                        binding.tvReceipt.setMovementMethod(LinkMovementMethod.getInstance());
+                        Spanned receiptContent = ReceiptGenerator.generateMSRReceipt(decodeData,"000013");
+                        binding.tvReceipt.setText(receiptContent);
                         String requestTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
                         String data = "{\"createdAt\": " + requestTime + ", \"deviceInfo\": " + DeviceUtils.getPhoneDetail() + ", \"countryCode\": " + DeviceUtils.getDevieCountry(PaymentActivity.this)
                                 + ", \"tlv\": " + content + "}";
@@ -519,6 +520,9 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                         content += "pinRandomNumber:" + " " + pinRandomNumber + "\n";
                         cardNo = maskedPAN;
                     }
+                    binding.tvReceipt.setMovementMethod(LinkMovementMethod.getInstance());
+                    Spanned receiptContent = ReceiptGenerator.generateMSRReceipt(decodeData,"000015");
+                    binding.tvReceipt.setText(receiptContent);
                     Hashtable<String, String> h = POSCommand.getInstance().getNFCBatchData();
                     String tlv = h.get("tlv");
                     TRACE.i("NFC Batch data: "+tlv);
@@ -624,7 +628,10 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 TRACE.d("ICC trade finished");
                 String content = getString(R.string.batch_data);
                 content += tlv;
-                viewModel.setTransactionSuccess(content);
+                PaymentModel paymentModel = viewModel.setTransactionSuccess(content);
+                binding.tvReceipt.setMovementMethod(LinkMovementMethod.getInstance());
+                Spanned receiptContent = ReceiptGenerator.generateICCReceipt(paymentModel);
+                binding.tvReceipt.setText(receiptContent);
             }
         });
     }

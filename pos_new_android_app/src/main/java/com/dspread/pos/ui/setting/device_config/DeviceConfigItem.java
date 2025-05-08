@@ -1,13 +1,13 @@
-package com.dspread.pos.ui.setting.currency;
+package com.dspread.pos.ui.setting.device_config;
 
-public class CurrencyItem {
+public class DeviceConfigItem {
     private String code;
     private String name;
     private int flagResId;
     private int numericCode;
     private boolean selected;
 
-    public CurrencyItem(String code, String name, int flagResId, int numericCode) {
+    public DeviceConfigItem(String code, String name, int flagResId, int numericCode) {
         this.code = code;
         this.name = name;
         this.flagResId = flagResId;

@@ -5,7 +5,7 @@
     <data>
         <variable
             name="currency"
-            type="com.dspread.pos.ui.setting.currency.CurrencyItem" />
+            type="com.dspread.pos.ui.setting.device_config.DeviceConfigItem" />
     </data>
 
     <LinearLayout

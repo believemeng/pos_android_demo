@@ -1,7 +1,6 @@
 package com.dspread.pos.ui.setting.connection_settings;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.ui.base.TitleProvider;
-import com.dspread.pos.ui.setting.currency.CurrencySelectionActivity;
+import com.dspread.pos.ui.setting.device_config.DeviceConfigActivity;
 import com.dspread.pos.ui.setting.device_selection.DeviceSelectionActivity;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_new_android_app.BR;
@@ -20,7 +19,6 @@ import com.dspread.pos_new_android_app.R;
 import com.dspread.pos_new_android_app.databinding.FragmentConnectionSettingsBinding;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
-import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionSettingsBinding, ConnectionSettingsViewModel> implements TitleProvider {
@@ -62,26 +60,26 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
 
         // 交易类型点击事件
         viewModel.transactionTypeClickEvent.observe(this, v -> {
-            Intent intent = new Intent(getActivity(), CurrencySelectionActivity.class);
-            intent.putExtra(CurrencySelectionActivity.EXTRA_LIST_TYPE,
-                    CurrencySelectionActivity.TYPE_TRANSACTION);
+            Intent intent = new Intent(getActivity(), DeviceConfigActivity.class);
+            intent.putExtra(DeviceConfigActivity.EXTRA_LIST_TYPE,
+                    DeviceConfigActivity.TYPE_TRANSACTION);
             startActivityForResult(intent, REQUEST_TRANSACTION_TYPE);
         });
 
         // 卡片模式点击事件
         viewModel.cardModeClickEvent.observe(this, v -> {
-            Intent intent = new Intent(getActivity(), CurrencySelectionActivity.class);
-            intent.putExtra(CurrencySelectionActivity.EXTRA_LIST_TYPE,
-                    CurrencySelectionActivity.TYPE_CARD_MODE);
+            Intent intent = new Intent(getActivity(), DeviceConfigActivity.class);
+            intent.putExtra(DeviceConfigActivity.EXTRA_LIST_TYPE,
+                    DeviceConfigActivity.TYPE_CARD_MODE);
             startActivityForResult(intent, REQUEST_CARD_MODE);
         });
 
         // 货币代码点击事件
         viewModel.currencyCodeClickEvent.observe(this, v -> {
 //            showCurrencyCodeDialog();
-            Intent intent = new Intent(getActivity(), CurrencySelectionActivity.class);
-            intent.putExtra(CurrencySelectionActivity.EXTRA_LIST_TYPE,
-                    CurrencySelectionActivity.TYPE_CURRENCY);
+            Intent intent = new Intent(getActivity(), DeviceConfigActivity.class);
+            intent.putExtra(DeviceConfigActivity.EXTRA_LIST_TYPE,
+                    DeviceConfigActivity.TYPE_CURRENCY);
             startActivityForResult(intent, REQUEST_CODE_CURRENCY);
         });
     }

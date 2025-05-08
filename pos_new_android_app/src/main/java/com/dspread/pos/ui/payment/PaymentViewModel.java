@@ -9,8 +9,13 @@ import androidx.databinding.ObservableField;
 import com.dspread.pos.common.base.BaseAppViewModel;
 import com.dspread.pos.common.http.RetrofitClient;
 import com.dspread.pos.common.http.api.DingTalkApiService;
+import com.dspread.pos.utils.ReceiptGenerator;
+import com.dspread.pos.utils.TLV;
+import com.dspread.pos.utils.TLVParser;
+import com.dspread.pos.utils.TRACE;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -43,10 +48,30 @@ public class PaymentViewModel extends BaseAppViewModel {
     public SingleLiveEvent<Boolean> isContinueTrx = new SingleLiveEvent();
     public ObservableBoolean showPinpad = new ObservableBoolean(false);
     public ObservableBoolean showResultStatus = new ObservableBoolean(false);
+    public ObservableField<String> receiptContent = new ObservableField<>();
     
-    public void setTransactionSuccess(String message) {
+    public PaymentModel setTransactionSuccess(String message) {
         setTransactionSuccess();
-        transactionResult.set(message);
+        TRACE.i("data = "+message);
+        message = message.substring(message.indexOf(":")+2);
+        TRACE.i("data 2 = "+message);
+        List<TLV> tlvList = TLVParser.parse(message);
+        TLV dateTlv = TLVParser.searchTLV(tlvList,"9A");
+        TLV transTypeTlv = TLVParser.searchTLV(tlvList,"9C");
+        TLV transCurrencyCodeTlv = TLVParser.searchTLV(tlvList,"5F2A");
+        TLV transAmountTlv = TLVParser.searchTLV(tlvList,"9F02");
+        TLV tvrTlv = TLVParser.searchTLV(tlvList,"95");
+        TLV cvmReusltTlv = TLVParser.searchTLV(tlvList,"9F34");
+        TLV cidTlv = TLVParser.searchTLV(tlvList,"9F27");
+        PaymentModel paymentModel = new PaymentModel();
+        paymentModel.setDate(dateTlv.value);
+        paymentModel.setTransType(transTypeTlv.value);
+        paymentModel.setTransCurrencyCode(transCurrencyCodeTlv.value);
+        paymentModel.setAmount(transAmountTlv.value);
+        paymentModel.setTvr(tvrTlv.value);
+        paymentModel.setCvmResults(cvmReusltTlv.value);
+        paymentModel.setCidData(cidTlv.value);
+        return paymentModel;
     }
     
     public void setTransactionFailed(String message) {
@@ -57,10 +82,6 @@ public class PaymentViewModel extends BaseAppViewModel {
         showResultStatus.set(true);
         isWaiting.set(false);
         transactionResult.set(message);
-    }
-
-    public void setTransactionResult(String newStatus) {
-        transactionResult.set(newStatus);
     }
     
     public void setAmount(String newAmount) {
@@ -105,8 +126,6 @@ public class PaymentViewModel extends BaseAppViewModel {
         }
     });
 
-
-    
     // 修改发送消息的方法
     public void sendDingTalkMessage(boolean isICC, String tlvData, String message) {
         Map<String, Object> textContent = new HashMap<>();
@@ -127,7 +146,7 @@ public class PaymentViewModel extends BaseAppViewModel {
                             ToastUtils.showShort("Send online success");
                             isOnlineSuccess.setValue(true);
                             if(!isICC){
-                                transactionResult.set(tlvData);
+//                                transactionResult.set(tlvData);
                             }
                         } else {
                             isOnlineSuccess.setValue(false);

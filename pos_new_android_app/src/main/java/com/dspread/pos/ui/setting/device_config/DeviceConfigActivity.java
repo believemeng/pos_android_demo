@@ -1,4 +1,4 @@
-package com.dspread.pos.ui.setting.currency;
+package com.dspread.pos.ui.setting.device_config;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -16,7 +16,7 @@ import java.util.List;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.SPUtils;
 
-public class CurrencySelectionActivity extends BaseActivity<ActivityCurrencySelectionBinding, CurrencySelectionViewModel> {
+public class DeviceConfigActivity extends BaseActivity<ActivityCurrencySelectionBinding, DeviceConfigSelectionViewModel> {
     public static final String EXTRA_LIST_TYPE = "list_type";
     public static final int TYPE_CURRENCY = 1;
     public static final int TYPE_TRANSACTION = 2;
@@ -88,24 +88,24 @@ public class CurrencySelectionActivity extends BaseActivity<ActivityCurrencySele
         });
     }
 
-    private void handleCardModeList(List<CurrencyItem> items, DeviceConfigAdapter adapter) {
+    private void handleCardModeList(List<DeviceConfigItem> items, DeviceConfigAdapter adapter) {
         String savedCardMode = SPUtils.getInstance().getString("cardMode", "");
         sortAndSetItems(items, adapter, savedCardMode);
     }
-    private void handleCurrencyList(List<CurrencyItem> items, DeviceConfigAdapter adapter) {
+    private void handleCurrencyList(List<DeviceConfigItem> items, DeviceConfigAdapter adapter) {
         int savedCode = SPUtils.getInstance().getInt("currencyCode", 0);
         sortAndSetItems(items, adapter, savedCode);
     }
 
-    private void handleTransactionList(List<CurrencyItem> items, DeviceConfigAdapter adapter) {
+    private void handleTransactionList(List<DeviceConfigItem> items, DeviceConfigAdapter adapter) {
         String savedType = SPUtils.getInstance().getString("transactionType", "");
         sortAndSetItems(items, adapter, savedType);
     }
 
-    private void sortAndSetItems(List<CurrencyItem> items, DeviceConfigAdapter adapter, Object savedValue) {
+    private void sortAndSetItems(List<DeviceConfigItem> items, DeviceConfigAdapter adapter, Object savedValue) {
         if (savedValue != null && !savedValue.toString().isEmpty() && !"0".equals(savedValue.toString())) {
-            CurrencyItem selectedItem = null;
-            for (CurrencyItem item : items) {
+            DeviceConfigItem selectedItem = null;
+            for (DeviceConfigItem item : items) {
                 if ((currentType == TYPE_CURRENCY && item.getNumericCode() == (int)savedValue)
                         || (currentType == TYPE_TRANSACTION && item.getCode().equals(savedValue))
                         || (currentType == TYPE_CARD_MODE && item.getName().equals(savedValue))) {
@@ -116,10 +116,10 @@ public class CurrencySelectionActivity extends BaseActivity<ActivityCurrencySele
             }
 
             if (selectedItem != null) {
-                List<CurrencyItem> sortedList = new ArrayList<>();
+                List<DeviceConfigItem> sortedList = new ArrayList<>();
                 sortedList.add(selectedItem);
                 // 使用传统的循环替代 stream
-                for (CurrencyItem item : items) {
+                for (DeviceConfigItem item : items) {
                     if (item != selectedItem) {
                         sortedList.add(item);
                     }
