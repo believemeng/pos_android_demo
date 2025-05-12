@@ -2,10 +2,12 @@ package com.dspread.pos.ui.payment;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -93,6 +95,9 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                     if(isICC){
                         POSCommand.getInstance().sendOnlineProcessResult("8A023030");
                     }else {
+                        if(DeviceUtils.isPrinterDevices()){
+                            handleSendReceipt();
+                        }
                         viewModel.setTransactionSuccess();
                     }
                 }else {
@@ -166,6 +171,10 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 transactionType = QPOSService.TransactionType.SALES_NEW;
             }
             int currencyCode = SPUtils.getInstance().getInt("currencyCode");
+            if(currencyCode == -1 || currencyCode == 0){
+                currencyCode = 156;
+            }
+            TRACE.i("currencyCode = "+String.valueOf(currencyCode));
             POSCommand.getInstance().setAmount(amount, cashbackAmounts, String.valueOf(currencyCode), transactionType);
         }
     }
@@ -446,6 +455,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                         String requestTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
                         String data = "{\"createdAt\": " + requestTime + ", \"deviceInfo\": " + DeviceUtils.getPhoneDetail() + ", \"countryCode\": " + DeviceUtils.getDevieCountry(PaymentActivity.this)
                                 + ", \"tlv\": " + content + "}";
+                        TRACE.i("msr result = "+receiptContent.toString());
+
                         viewModel.sendDingTalkMessage(false,content,data);
                     }
                 } else if ((result == QPOSService.DoTradeResult.NFC_ONLINE) || (result == QPOSService.DoTradeResult.NFC_OFFLINE)) {
@@ -632,6 +643,9 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 binding.tvReceipt.setMovementMethod(LinkMovementMethod.getInstance());
                 Spanned receiptContent = ReceiptGenerator.generateICCReceipt(paymentModel);
                 binding.tvReceipt.setText(receiptContent);
+                if(DeviceUtils.isPrinterDevices()){
+                    handleSendReceipt();
+                }
             }
         });
     }
@@ -794,5 +808,51 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         // 上传文件内容到Bugly
 //        CrashReport.putUserData(this, "logFile_DSLogs", log);
         QPOSCallbackManager.getInstance().unregisterCallback(MyCustomQPOSCallback.class);
+    }
+
+    private void convertReceiptToBitmap(final OnBitmapReadyListener listener) {
+        binding.tvReceipt.post(new Runnable() {
+            @Override
+            public void run() {
+                if (binding.tvReceipt.getWidth() <= 0) {
+                    // 等待下一个布局周期
+                    binding.tvReceipt.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                        @Override
+                        public void onGlobalLayout() {
+                            binding.tvReceipt.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            // 现在可以安全地获取宽度
+                            Bitmap bitmap = viewModel.convertReceiptToBitmap(binding.tvReceipt);
+                            if (listener != null) {
+                                listener.onBitmapReady(bitmap);
+                            }
+                        }
+                    });
+                } else {
+                    Bitmap bitmap = viewModel.convertReceiptToBitmap(binding.tvReceipt);
+                    if (listener != null) {
+                        listener.onBitmapReady(bitmap);
+                    }
+                }
+            }
+        });
+    }
+
+    // 回调接口
+    public interface OnBitmapReadyListener {
+        void onBitmapReady(Bitmap bitmap);
+    }
+
+    // 使用示例
+    private void handleSendReceipt() {
+        convertReceiptToBitmap(new OnBitmapReadyListener() {
+            @Override
+            public void onBitmapReady(Bitmap bitmap) {
+                if (bitmap != null) {
+                    binding.btnSendReceipt.setVisibility(View.VISIBLE);
+                } else {
+                    binding.btnSendReceipt.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 }

@@ -1,6 +1,12 @@
 package com.dspread.pos.ui.payment;
 
 import android.app.Application;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.os.RemoteException;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableBoolean;
@@ -9,10 +15,13 @@ import androidx.databinding.ObservableField;
 import com.dspread.pos.common.base.BaseAppViewModel;
 import com.dspread.pos.common.http.RetrofitClient;
 import com.dspread.pos.common.http.api.DingTalkApiService;
+import com.dspread.pos.printerAPI.PrinterHelper;
 import com.dspread.pos.utils.ReceiptGenerator;
 import com.dspread.pos.utils.TLV;
 import com.dspread.pos.utils.TLVParser;
 import com.dspread.pos.utils.TRACE;
+import com.dspread.print.device.PrinterDevice;
+import com.dspread.print.device.PrinterManager;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +58,7 @@ public class PaymentViewModel extends BaseAppViewModel {
     public ObservableBoolean showPinpad = new ObservableBoolean(false);
     public ObservableBoolean showResultStatus = new ObservableBoolean(false);
     public ObservableField<String> receiptContent = new ObservableField<>();
+    private Bitmap receiptBitmap;
     
     public PaymentModel setTransactionSuccess(String message) {
         setTransactionSuccess();
@@ -125,6 +135,41 @@ public class PaymentViewModel extends BaseAppViewModel {
             isContinueTrx.setValue(true);
         }
     });
+
+    public BindingCommand sendReceiptCommand = new BindingCommand(new BindingAction() {
+        @Override
+        public void call() {
+            PrinterManager instance = PrinterManager.getInstance();
+            PrinterDevice mPrinter = instance.getPrinter();
+            PrinterHelper.getInstance().setPrinter(mPrinter);
+            PrinterHelper.getInstance().initPrinter(context);
+            try {
+                PrinterHelper.getInstance().printBitmap(getApplication(),receiptBitmap);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    });
+
+    public Bitmap convertReceiptToBitmap(TextView receiptView) {
+        receiptView.measure(
+                View.MeasureSpec.makeMeasureSpec(receiptView.getWidth(), View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        );
+
+        Bitmap bitmap = Bitmap.createBitmap(
+                receiptView.getWidth(),
+                receiptView.getMeasuredHeight(),
+                Bitmap.Config.ARGB_8888
+        );
+
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawColor(Color.WHITE);  // 设置背景色为白色
+        receiptView.layout(0, 0, receiptView.getWidth(), receiptView.getMeasuredHeight());
+        receiptView.draw(canvas);
+        receiptBitmap = bitmap;
+        return bitmap;
+    }
 
     // 修改发送消息的方法
     public void sendDingTalkMessage(boolean isICC, String tlvData, String message) {

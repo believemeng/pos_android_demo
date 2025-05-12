@@ -39,9 +39,8 @@ public abstract class PrinterBaseActivity<V extends ViewDataBinding, VM extends 
         }
         
         // 设置打印机实例到 ViewModel
-        viewModel.setPrinter(mPrinter);
+        viewModel.setPrinter(mPrinter,this);
         
-        initPrinter();
         MyPrinterListener myPrinterListener = new MyPrinterListener();
         mPrinter.setPrintListener(myPrinterListener);
 
@@ -49,21 +48,7 @@ public abstract class PrinterBaseActivity<V extends ViewDataBinding, VM extends 
         binding.toolbar.setNavigationOnClickListener(v -> finish());
     }
 
-    private void initPrinter() {
-        if (!DeviceUtils.isAppInstalled(getApplicationContext(), DeviceUtils.UART_AIDL_SERVICE_APP_PACKAGE_NAME)) {
-            mPrinter.initPrinter(this, new PrinterInitListener() {
-                @Override
-                public void connected() {
-                    mPrinter.setPrinterTerminatedState(PrinterDevice.PrintTerminationState.PRINT_STOP);
-                }
-                @Override
-                public void disconnected() {
-                }
-            });
-        } else {
-            mPrinter.initPrinter(this);
-        }
-    }
+
 
     protected abstract void onReturnPrintResult(boolean isSuccess, String status, PrinterDevice.ResultType resultType);
 

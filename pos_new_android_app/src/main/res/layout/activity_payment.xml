@@ -129,13 +129,14 @@
                     android:id="@+id/scv_text"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:layout_margin="16dp"
+                    android:layout_gravity="center">
 
                     <TextView
                         android:id="@+id/tv_receipt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="16dp"
                         android:background="@drawable/bg_receipt"
                         android:fontFamily="monospace"
                         android:padding="16dp"
@@ -147,15 +148,42 @@
                         android:text="@{viewModel.transactionResult}"
                         />
                 </ScrollView>
-
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:orientation="horizontal">
                 <com.google.android.material.button.MaterialButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
                     android:text="@string/continue_trading"
                     android:textColor="@color/white"
+                    android:background="@drawable/bg_primary_button"
+                    android:layout_marginEnd="8dp"
                     app:cornerRadius="8dp"
+                    android:textSize="14sp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:gravity="center"
                     binding:onClickCommand="@{viewModel.continueTxnsCommand}"/>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_send_receipt"
+                    android:visibility="gone"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_primary_button"
+                    android:text="@string/send_receipt"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    app:cornerRadius="8dp"
+                    binding:onClickCommand="@{viewModel.sendReceiptCommand}"/>
+            </LinearLayout>
             </LinearLayout>
         </FrameLayout>
     </LinearLayout>

@@ -1,6 +1,7 @@
 package com.dspread.pos.ui.printer.activities.base;
 
 import android.app.Application;
+import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableBoolean;
@@ -15,9 +16,10 @@ import me.goldze.mvvmhabit.binding.command.BindingCommand;
 public abstract class BasePrinterViewModel extends BaseAppViewModel {
     protected PrinterDevice mPrinter;
 
-    public void setPrinter(PrinterDevice printer) {
+    public void setPrinter(PrinterDevice printer, Context context) {
         this.mPrinter = printer;
         PrinterHelper.getInstance().setPrinter(mPrinter);
+        PrinterHelper.getInstance().initPrinter(context);
     }
 
     protected PrinterDevice getPrinter() {

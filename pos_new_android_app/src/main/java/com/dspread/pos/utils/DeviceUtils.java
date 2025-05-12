@@ -119,6 +119,14 @@ public class DeviceUtils {
             }
             return false;
         }
+
+    public static boolean isPrinterDevices(){
+        if("D30".equals(Build.MODEL)||"D60".equals(Build.MODEL)
+                ||"D70".equals(Build.MODEL)||"D30M".equals(Build.MODEL)){
+            return true;
+        }
+        return false;
+    }
         /**
          * 获取手机厂商名
          * HuaWei

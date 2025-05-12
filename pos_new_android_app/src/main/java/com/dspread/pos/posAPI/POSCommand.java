@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.common.enums.TransCardMode;
+import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.xpos.QPOSService;
 
@@ -57,9 +58,17 @@ public class POSCommand {
     }
     public void setCardTradeMode(){
         String modeName = SPUtils.getInstance().getString("cardMode");
-        QPOSService.CardTradeMode mode = TransCardMode.valueOf(modeName).getCardTradeModeValue();
-        TRACE.i("card mode = "+mode);
-        pos.setCardTradeMode(mode);
+        if(modeName == null || "".equals(modeName)){
+            if(DeviceUtils.isSmartDevices()){
+                pos.setCardTradeMode(QPOSService.CardTradeMode.SWIPE_TAP_INSERT_CARD_NOTUP);
+            }else {
+                pos.setCardTradeMode(QPOSService.CardTradeMode.SWIPE_TAP_INSERT_CARD);
+            }
+        }else {
+            QPOSService.CardTradeMode mode = TransCardMode.valueOf(modeName).getCardTradeModeValue();
+            TRACE.i("card mode = " + mode);
+            pos.setCardTradeMode(mode);
+        }
     }
     public void doTrade(int timeout){
         pos.doTrade(timeout);

@@ -1,32 +1,24 @@
 package com.dspread.pos.ui.main;
 
-
 import android.content.Context;
 import android.content.pm.ActivityInfo;
-import android.os.Build;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.SubMenu;
+
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
-
 import androidx.annotation.Nullable;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.view.menu.MenuBuilder;
+
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-
 
 import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.posAPI.MyCustomQPOSCallback;
@@ -37,6 +29,7 @@ import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_new_android_app.BR;
 import com.dspread.pos_new_android_app.R;
 import com.dspread.pos_new_android_app.databinding.ActivityMainBinding;
+import com.dspread.xpos.QPOSService;
 import com.google.android.material.navigation.NavigationView;
 import com.tencent.upgrade.core.DefaultUpgradeStrategyRequestCallback;
 import com.tencent.upgrade.core.UpgradeManager;
@@ -47,7 +40,6 @@ import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.SPUtils;
 
 public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewModel> implements MyCustomQPOSCallback{
-
     public void setToolbarTitle(String title) {
         if (toolbar != null) {
             toolbar.setTitle(title);
@@ -57,18 +49,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
-    private FragmentTransaction transaction;
-    private TextView deviceConnectType;
     private TextView tvAppVersion;
-    private MenuItem menuItem;
-
-    String deviceModel = Build.MODEL;
-    String deviceManufacturer = Build.MANUFACTURER;
-
     ActionBarDrawerToggle toggle;
-    private int currentFragmentIndex = -1;
-    private NavController navController;
-
     @Override
     public void initParam() {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -88,9 +70,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     @Override
     public void initData() {
         super.initData();
-//        // 获取 NavController
-//        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
-//                .findFragmentById(R.id.nav_host_fragment);
         QPOSCallbackManager.getInstance().registerCallback(MyCustomQPOSCallback.class, this);
         viewModel = new MainViewModel(getApplication(), this);
         binding.setVariable(BR.viewModel, viewModel);
@@ -98,18 +77,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         navigationView = binding.navView;
         toolbar = binding.appBarMain.toolbar;
         View headerView = navigationView.getHeaderView(0);
-        deviceConnectType = headerView.findViewById(R.id.device_connect_type);
         tvAppVersion = headerView.findViewById(R.id.tv_appversion);
-        menuItem = navigationView.getMenu().findItem(R.id.nav_printer);
         setSupportActionBar(toolbar);
         navigationView.bringToFront();
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-
-        // 初始化时隐藏Setting的子菜单
-//        hideSettingSubmenu();
-
         viewModel.openDevice();
     }
 
@@ -134,7 +107,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             public void onChanged(View drawerView) {
                 String packageVersionName = DevUtils.getPackageVersionName(MainActivity.this, "com.dspread.pos_new_android_app");
                 tvAppVersion.setText(getString(R.string.app_version) + packageVersionName);
-                hideKeyboard(drawerView);
                 checkUpdate();
             }
         });
@@ -196,13 +168,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                     Mydialog.manualExitDialog.dismiss();
                 }
             });
-        }
-    }
-
-    public static void hideKeyboard(View v) {
-        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm.isActive()) {
-            imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
         }
     }
 
