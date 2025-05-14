@@ -35,8 +35,12 @@ public class PrinterHelper {
         this.mPrinter = printer;
     }
 
+    public PrinterDevice getmPrinter(){
+        return this.mPrinter;
+    }
+
     public void initPrinter(Context context) {
-        if (!DeviceUtils.isAppInstalled(context, DeviceUtils.UART_AIDL_SERVICE_APP_PACKAGE_NAME)) {
+        if ("D30".equalsIgnoreCase(Build.MODEL) && !DeviceUtils.isAppInstalled(context, DeviceUtils.UART_AIDL_SERVICE_APP_PACKAGE_NAME)) {
             mPrinter.initPrinter(context, new PrinterInitListener() {
                 @Override
                 public void connected() {
@@ -219,6 +223,12 @@ public class PrinterHelper {
     }
     public void getPrinterVoltage() throws RemoteException {
         mPrinter.getPrinterVoltage();
+    }
+
+    public void close(){
+        if (mPrinter != null) {
+            mPrinter.close();
+        }
     }
 
 }

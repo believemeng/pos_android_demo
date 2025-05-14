@@ -293,11 +293,14 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         });
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onDeviceFound(BluetoothDevice device) {
         runOnUiThread(() -> {
             if (bluetoothAdapter != null) {
-                bluetoothAdapter.addDevice(device);
+                if(device.getName() != null && !"".equals(device.getName())) {
+                    bluetoothAdapter.addDevice(device);
+                }
             }
         });
     }

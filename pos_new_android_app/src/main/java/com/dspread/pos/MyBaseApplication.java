@@ -36,14 +36,11 @@ import me.goldze.mvvmhabit.crash.CaocConfig;
 public class MyBaseApplication extends BaseApplication {
     public static Context getApplicationInstance;
     private static QPOSService pos;
-    public static Handler handler;
-    private static MyBaseApplication instance;
 
     @Override
     public void onCreate() {
         super.onCreate();
         getApplicationInstance = this;
-        instance = this;
         initCrash();
         initBugly();
         initShiply();

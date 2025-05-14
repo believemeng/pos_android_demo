@@ -17,6 +17,7 @@ import androidx.lifecycle.Observer;
 import com.dspread.pos.posAPI.MyCustomQPOSCallback;
 import com.dspread.pos.common.manager.QPOSCallbackManager;
 import com.dspread.pos.posAPI.POSCommand;
+import com.dspread.pos.printerAPI.PrinterHelper;
 import com.dspread.pos.ui.payment.pinkeyboard.KeyboardUtil;
 import com.dspread.pos.ui.payment.pinkeyboard.MyKeyboardView;
 import com.dspread.pos.ui.payment.pinkeyboard.PinPadDialog;
@@ -285,6 +286,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             @Override
             public void run() {
                 viewModel.titleText.set(getString(R.string.input_pin));
+                viewModel.stopLoading();
+                viewModel.showPinpad.set(true);
 //                dismissDialog();
 //                pinpadEditText.setVisibility(View.VISIBLE);
 //                mllchrccard.setVisibility(View.GONE);
@@ -777,7 +780,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                viewModel.setTransactionFailed("Transaction is canceled!");
+//                viewModel.setTransactionFailed("Transaction is canceled!");
             }
         });
     }
@@ -808,6 +811,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         // 上传文件内容到Bugly
 //        CrashReport.putUserData(this, "logFile_DSLogs", log);
         QPOSCallbackManager.getInstance().unregisterCallback(MyCustomQPOSCallback.class);
+        PrinterHelper.getInstance().close();
     }
 
     private void convertReceiptToBitmap(final OnBitmapReadyListener listener) {

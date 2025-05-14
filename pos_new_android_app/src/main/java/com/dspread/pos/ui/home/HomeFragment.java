@@ -8,11 +8,15 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.dspread.pos.common.base.BaseFragment;
+import com.dspread.pos.posAPI.POSCommand;
 import com.dspread.pos.ui.base.TitleProvider;
 import com.dspread.pos.ui.payment.PaymentActivity;
+import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_new_android_app.BR;
 import com.dspread.pos_new_android_app.R;
 import com.dspread.pos_new_android_app.databinding.FragmentHomeBinding;
+
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 
 public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewModel> implements TitleProvider {
@@ -52,6 +56,10 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     public void initViewObservable() {
         viewModel.paymentStartEvent.observe(this, inputMoney -> {
             if (!canshow) return;
+            if(POSCommand.getInstance().getQPOSService() == null){
+                ToastUtils.showShort(getString(R.string.connect_warnning));
+                return;
+            }
             canshow = false;
             showTimer.start();
             Intent intent = new Intent(getActivity(), PaymentActivity.class);
@@ -62,8 +70,46 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode != KeyEvent.KEYCODE_BACK) {
-//            keyboardUtil.getmOnKeyboardActionListener().onKey(keyCode, null);
+        TRACE.i("home on keydown = "+keyCode);
+        if (event.getAction() == KeyEvent.ACTION_UP) {
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_0:
+                    viewModel.onNumberClick("0");
+                    return true;
+                case KeyEvent.KEYCODE_1:
+                    viewModel.onNumberClick("1");
+                    return true;
+                case KeyEvent.KEYCODE_2:
+                    viewModel.onNumberClick("2");
+                    return true;
+                case KeyEvent.KEYCODE_3:
+                    viewModel.onNumberClick("3");
+                    return true;
+                case KeyEvent.KEYCODE_4:
+                    viewModel.onNumberClick("4");
+                    return true;
+                case KeyEvent.KEYCODE_5:
+                    viewModel.onNumberClick("5");
+                    return true;
+                case KeyEvent.KEYCODE_6:
+                    viewModel.onNumberClick("6");
+                    return true;
+                case KeyEvent.KEYCODE_7:
+                    viewModel.onNumberClick("7");
+                    return true;
+                case KeyEvent.KEYCODE_8:
+                    viewModel.onNumberClick("8");
+                    return true;
+                case KeyEvent.KEYCODE_9:
+                    viewModel.onNumberClick("9");
+                    return true;
+                case KeyEvent.KEYCODE_DEL:
+                    viewModel.onClearClickCommand.execute();
+                    return true;
+                case KeyEvent.KEYCODE_ENTER:
+                    viewModel.onConfirmClickCommand.execute();
+                    return true;
+            }
         }
         return true;
     }

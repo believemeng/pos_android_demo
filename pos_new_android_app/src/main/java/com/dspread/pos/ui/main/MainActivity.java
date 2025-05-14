@@ -17,12 +17,17 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.posAPI.MyCustomQPOSCallback;
 import com.dspread.pos.common.manager.QPOSCallbackManager;
+import com.dspread.pos.posAPI.POSCommand;
+import com.dspread.pos.ui.home.HomeFragment;
 import com.dspread.pos.utils.DevUtils;
 import com.dspread.pos.utils.Mydialog;
 import com.dspread.pos.utils.TRACE;
@@ -51,6 +56,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     Toolbar toolbar;
     private TextView tvAppVersion;
     ActionBarDrawerToggle toggle;
+    private HomeFragment homeFragment;
     @Override
     public void initParam() {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -133,13 +139,20 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             if (action == KeyEvent.ACTION_UP) {
                 toolbar.setTitle(getString(R.string.menu_payment));
                 drawerLayout.close();
-                viewModel.handleNavigationItemClick(R.id.nav_home);
+                Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+                if (currentFragment instanceof HomeFragment) {
+                    return ((HomeFragment) currentFragment).onKeyDown(event.getKeyCode(), event);
+                }
+//                viewModel.handleNavigationItemClick(R.id.nav_home);
                 exit();
             }
             return true;
+        }else {
+            return homeFragment.onKeyDown(keyCode,event);
         }
-        return super.dispatchKeyEvent(event); // 调用父类的dispatchKeyEvent方法，将事件传递给其他组件
+//        return super.dispatchKeyEvent(event); // 调用父类的dispatchKeyEvent方法，将事件传递给其他组件
     }
+
 
     private static boolean isExit = false;
     Handler mHandler = new Handler(Looper.myLooper()) {
@@ -181,6 +194,20 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             String posId = posIdTable.get("posId") == null ? "" : (String) posIdTable.get("posId");
             SPUtils.getInstance().put("posID",posId);
         }
+    }
+
+    @Override
+    public void onRequestNoQposDetected() {
+        MyCustomQPOSCallback.super.onRequestNoQposDetected();
+        SPUtils.getInstance().put("isConnected",false);
+        POSCommand.getInstance().setQPOSService(null);
+    }
+
+    @Override
+    public void onRequestQposDisconnected() {
+        MyCustomQPOSCallback.super.onRequestQposDisconnected();
+        SPUtils.getInstance().put("isConnected",false);
+        POSCommand.getInstance().setQPOSService(null);
     }
 }
 

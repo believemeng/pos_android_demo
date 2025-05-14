@@ -103,6 +103,7 @@
 
             <!-- 清除按钮 -->
             <Button
+                android:id="@+id/btn_clear"
                 style="@style/NumberKeyboardButton.Clear"
                 android:minWidth="0dp"
                 android:minHeight="0dp"
@@ -119,6 +120,7 @@
 
             <!-- 确认按钮 -->
             <Button
+                android:id="@+id/btn_confirm"
                 style="@style/NumberKeyboardButton.Confirm"
                 android:minWidth="0dp"
                 android:minHeight="0dp"

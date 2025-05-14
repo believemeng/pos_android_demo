@@ -9,7 +9,19 @@
         android:id="@+id/homeFragment"
         android:name="com.dspread.pos.ui.home.HomeFragment"
         app:startDestination="@id/nav_home" />
+    <fragment
+        android:id="@+id/nav_printer"
+        android:name="com.dspread.pos.ui.printer.PrinterHelperFragment"
+        app:startDestination="@id/nav_printer" />
 
+    <fragment
+        android:id="@+id/nav_scan"
+        android:name="com.dspread.pos.ui.scan.ScanFragment"
+        app:startDestination="@id/nav_scan"/>
+    <fragment
+        android:id="@+id/nav_setting"
+        android:name="com.dspread.pos.ui.scan.ScanFragment"
+        app:startDestination="@id/nav_setting" />
 <!--    <fragment-->
 <!--        android:id="@+id/nav_autotrade"-->
 <!--        android:name="com.dspread.demoui.ui.fragment.AutoFragment"-->

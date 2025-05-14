@@ -20,6 +20,7 @@ import com.dspread.pos.utils.ReceiptGenerator;
 import com.dspread.pos.utils.TLV;
 import com.dspread.pos.utils.TLVParser;
 import com.dspread.pos.utils.TRACE;
+import com.dspread.print.device.PrintListener;
 import com.dspread.print.device.PrinterDevice;
 import com.dspread.print.device.PrinterManager;
 
@@ -34,6 +35,7 @@ import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
 import me.goldze.mvvmhabit.http.BaseResponse;
+import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 
@@ -67,7 +69,7 @@ public class PaymentViewModel extends BaseAppViewModel {
         TRACE.i("data 2 = "+message);
         List<TLV> tlvList = TLVParser.parse(message);
         TLV dateTlv = TLVParser.searchTLV(tlvList,"9A");
-        TLV transTypeTlv = TLVParser.searchTLV(tlvList,"9C");
+//        TLV transTypeTlv = TLVParser.searchTLV(tlvList,"9C");
         TLV transCurrencyCodeTlv = TLVParser.searchTLV(tlvList,"5F2A");
         TLV transAmountTlv = TLVParser.searchTLV(tlvList,"9F02");
         TLV tvrTlv = TLVParser.searchTLV(tlvList,"95");
@@ -75,12 +77,13 @@ public class PaymentViewModel extends BaseAppViewModel {
         TLV cidTlv = TLVParser.searchTLV(tlvList,"9F27");
         PaymentModel paymentModel = new PaymentModel();
         paymentModel.setDate(dateTlv.value);
-        paymentModel.setTransType(transTypeTlv.value);
-        paymentModel.setTransCurrencyCode(transCurrencyCodeTlv.value);
-        paymentModel.setAmount(transAmountTlv.value);
-        paymentModel.setTvr(tvrTlv.value);
-        paymentModel.setCvmResults(cvmReusltTlv.value);
-        paymentModel.setCidData(cidTlv.value);
+        String transType = SPUtils.getInstance().getString("transactionType");
+        paymentModel.setTransType(transType);
+        paymentModel.setTransCurrencyCode(transCurrencyCodeTlv == null? "":transCurrencyCodeTlv.value);
+        paymentModel.setAmount(transAmountTlv == null? "":transAmountTlv.value);
+        paymentModel.setTvr(tvrTlv == null? "":tvrTlv.value);
+        paymentModel.setCvmResults(cvmReusltTlv == null? "":cvmReusltTlv.value);
+        paymentModel.setCidData(cidTlv == null? "":cidTlv.value);
         return paymentModel;
     }
     
@@ -144,7 +147,15 @@ public class PaymentViewModel extends BaseAppViewModel {
             PrinterHelper.getInstance().setPrinter(mPrinter);
             PrinterHelper.getInstance().initPrinter(context);
             try {
+                TRACE.i("bitmap = "+receiptBitmap);
                 PrinterHelper.getInstance().printBitmap(getApplication(),receiptBitmap);
+                PrinterHelper.getInstance().getmPrinter().setPrintListener(new PrintListener() {
+                    @Override
+                    public void printResult(boolean b, String s, PrinterDevice.ResultType resultType) {
+                        ToastUtils.showShort("Print Finished!");
+                        finish();
+                    }
+                });
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }

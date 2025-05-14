@@ -77,7 +77,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui:2.4.1'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.25'
 
-    implementation 'com.dspread.print:dspread_print_sdk:1.4.0-beta'
+    implementation 'com.dspread.print:dspread_print_sdk:1.4.6-beta'
 //    implementation 'com.dspread.library:dspread_pos_sdk:7.1.2'
 
     implementation project(':mvvmhabit')

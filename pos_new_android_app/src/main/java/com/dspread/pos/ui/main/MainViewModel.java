@@ -1,9 +1,8 @@
 package com.dspread.pos.ui.main;
 
 import android.app.Application;
-import android.view.MenuItem;
+import android.view.KeyEvent;
 import android.view.View;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -41,6 +40,7 @@ public class MainViewModel extends BaseViewModel {
 
     private WeakReference<MainActivity> activityRef;
     private Fragment currentFragment;
+    public HomeFragment homeFragment;
     private MyBaseApplication myBaseApplication;
     public QPOSService pos;
 
@@ -54,7 +54,6 @@ public class MainViewModel extends BaseViewModel {
             myBaseApplication = (MyBaseApplication) BaseApplication.getInstance();
         }
     }
-
     public void openDevice(){
         if(DeviceUtils.isSmartDevices()){
             myBaseApplication.open(QPOSService.CommunicationMode.UART, getApplication());
@@ -116,7 +115,8 @@ public class MainViewModel extends BaseViewModel {
     private Fragment createFragment(int itemId) {
         switch (itemId) {
             case R.id.nav_home:
-                return new HomeFragment();
+                homeFragment = new HomeFragment();
+                return homeFragment;
             case R.id.nav_setting:
                 return new ConnectionSettingsFragment();
             case R.id.nav_printer:
@@ -131,20 +131,25 @@ public class MainViewModel extends BaseViewModel {
 
     private void switchFragment(Fragment targetFragment) {
         FragmentManager fragmentManager = activity.getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         // 隐藏当前Fragment，显示目标Fragment
         if (currentFragment != null) {
-            transaction.hide(currentFragment);
+            fragmentTransaction.hide(currentFragment);
         }
 
         if (!targetFragment.isAdded()) {
-            transaction.add(R.id.nav_host_fragment, targetFragment);
+            fragmentTransaction.add(R.id.nav_host_fragment, targetFragment);
         } else {
-            transaction.show(targetFragment);
+            fragmentTransaction.show(targetFragment);
         }
 
-        transaction.commitAllowingStateLoss();
+        fragmentTransaction.commitAllowingStateLoss();
         currentFragment = targetFragment;
     }
+
+    public boolean onKeyDownInHome(int keyCode, KeyEvent event){
+       return homeFragment.onKeyDown(keyCode,event);
+    }
+
 }

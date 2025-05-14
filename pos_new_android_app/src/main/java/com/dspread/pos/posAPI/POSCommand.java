@@ -1,6 +1,7 @@
 package com.dspread.pos.posAPI;
 
 import android.content.Context;
+import android.hardware.usb.UsbDevice;
 
 import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.common.enums.TransCardMode;
@@ -11,6 +12,7 @@ import com.dspread.xpos.QPOSService;
 import java.util.Hashtable;
 
 import me.goldze.mvvmhabit.utils.SPUtils;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class POSCommand {
     public QPOSService pos;
@@ -26,6 +28,10 @@ public class POSCommand {
         return posCommand;
     }
 
+    public QPOSService getQPOSService(){
+        return this.pos;
+    }
+
     public void setQPOSService(QPOSService pos){
         this.pos = pos;
     }
@@ -36,6 +42,10 @@ public class POSCommand {
 
     public void openUart(){
         pos.openUart();
+    }
+
+    public void openUsb(UsbDevice device){
+        pos.openUsb(device);
     }
 
     public void scanQPos2Mode(Context context, long time){
@@ -57,6 +67,10 @@ public class POSCommand {
         pos.connectBluetoothDevice(isAutoBind,time,deviceAddress);
     }
     public void setCardTradeMode(){
+        if(pos == null){
+            ToastUtils.showShort("Pls connect your devices first!");
+            return;
+        }
         String modeName = SPUtils.getInstance().getString("cardMode");
         if(modeName == null || "".equals(modeName)){
             if(DeviceUtils.isSmartDevices()){
