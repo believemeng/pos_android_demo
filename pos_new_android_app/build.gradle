@@ -39,8 +39,8 @@ android {
         applicationId "com.dspread.pos_new_android_app"
         minSdk 24
         targetSdk 34
-        versionCode 6
-        versionName "1.0.5"
+        versionCode 7
+        versionName "1.0.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -77,7 +77,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui:2.4.1'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.25'
 
-    implementation 'com.dspread.print:dspread_print_sdk:1.4.6-beta'
+    implementation 'com.dspread.print:dspread_print_sdk:1.4.7-beta'
 //    implementation 'com.dspread.library:dspread_pos_sdk:7.1.2'
 
     implementation project(':mvvmhabit')

@@ -11,6 +11,7 @@ import com.action.printerservice.barcode.Barcode1D;
 import com.action.printerservice.barcode.Barcode2D;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.QRCodeUtil;
+import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_new_android_app.R;
 import com.dspread.print.device.PrinterDevice;
 import com.dspread.print.device.PrinterInitListener;
@@ -40,10 +41,12 @@ public class PrinterHelper {
     }
 
     public void initPrinter(Context context) {
-        if ("D30".equalsIgnoreCase(Build.MODEL) && !DeviceUtils.isAppInstalled(context, DeviceUtils.UART_AIDL_SERVICE_APP_PACKAGE_NAME)) {
+        if ("D30".equalsIgnoreCase(Build.MODEL) || DeviceUtils.isAppInstalled(context, DeviceUtils.UART_AIDL_SERVICE_APP_PACKAGE_NAME)) {
+            TRACE.i("init printer with callkback==");
             mPrinter.initPrinter(context, new PrinterInitListener() {
                 @Override
                 public void connected() {
+                    TRACE.i("init printer with callkback success==");
                     mPrinter.setPrinterTerminatedState(PrinterDevice.PrintTerminationState.PRINT_STOP);
                 }
                 @Override
@@ -51,6 +54,7 @@ public class PrinterHelper {
                 }
             });
         } else {
+            TRACE.i("init printer ==");
             mPrinter.initPrinter(context);
         }
     }

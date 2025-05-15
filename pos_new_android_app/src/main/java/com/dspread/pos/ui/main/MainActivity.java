@@ -21,6 +21,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.dspread.pos.common.enums.POS_TYPE;
@@ -76,12 +78,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     @Override
     public void initData() {
         super.initData();
+        viewModel.handleNavigationItemClick(R.id.nav_home);
         QPOSCallbackManager.getInstance().registerCallback(MyCustomQPOSCallback.class, this);
         viewModel = new MainViewModel(getApplication(), this);
         binding.setVariable(BR.viewModel, viewModel);
         drawerLayout = binding.drawerLayout;
         navigationView = binding.navView;
-        toolbar = binding.appBarMain.toolbar;
+        toolbar = binding.toolbar;
         View headerView = navigationView.getHeaderView(0);
         tvAppVersion = headerView.findViewById(R.id.tv_appversion);
         setSupportActionBar(toolbar);
@@ -139,16 +142,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             if (action == KeyEvent.ACTION_UP) {
                 toolbar.setTitle(getString(R.string.menu_payment));
                 drawerLayout.close();
-                Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-                if (currentFragment instanceof HomeFragment) {
-                    return ((HomeFragment) currentFragment).onKeyDown(event.getKeyCode(), event);
-                }
-//                viewModel.handleNavigationItemClick(R.id.nav_home);
+                viewModel.handleNavigationItemClick(R.id.nav_home);
                 exit();
             }
             return true;
         }else {
-            return homeFragment.onKeyDown(keyCode,event);
+            return viewModel.onKeyDownInHome(keyCode,event);
         }
 //        return super.dispatchKeyEvent(event); // 调用父类的dispatchKeyEvent方法，将事件传递给其他组件
     }

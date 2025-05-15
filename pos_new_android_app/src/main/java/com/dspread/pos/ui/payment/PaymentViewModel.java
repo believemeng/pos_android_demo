@@ -4,6 +4,7 @@ import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.os.Handler;
 import android.os.RemoteException;
 import android.view.View;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ import com.dspread.pos.utils.ReceiptGenerator;
 import com.dspread.pos.utils.TLV;
 import com.dspread.pos.utils.TLVParser;
 import com.dspread.pos.utils.TRACE;
+import com.dspread.pos_new_android_app.R;
 import com.dspread.print.device.PrintListener;
 import com.dspread.print.device.PrinterDevice;
 import com.dspread.print.device.PrinterManager;
@@ -146,9 +148,13 @@ public class PaymentViewModel extends BaseAppViewModel {
             PrinterDevice mPrinter = instance.getPrinter();
             PrinterHelper.getInstance().setPrinter(mPrinter);
             PrinterHelper.getInstance().initPrinter(context);
-            try {
-                TRACE.i("bitmap = "+receiptBitmap);
-                PrinterHelper.getInstance().printBitmap(getApplication(),receiptBitmap);
+            TRACE.i("bitmap = "+receiptBitmap);
+            new Handler().postDelayed(() -> {
+                try {
+                    PrinterHelper.getInstance().printBitmap(getApplication(),receiptBitmap);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
                 PrinterHelper.getInstance().getmPrinter().setPrintListener(new PrintListener() {
                     @Override
                     public void printResult(boolean b, String s, PrinterDevice.ResultType resultType) {
@@ -156,9 +162,7 @@ public class PaymentViewModel extends BaseAppViewModel {
                         finish();
                     }
                 });
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
-            }
+            },100);
         }
     });
 
