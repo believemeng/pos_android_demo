@@ -102,11 +102,11 @@ public class MainViewModel extends BaseViewModel {
         if (activity == null) return;
 
         Fragment targetFragment;
-        // 从缓存中获取Fragment
+        // get Fragment from cache
         if (FragmentCacheManager.getInstance().hasFragment(itemId)) {
             targetFragment = FragmentCacheManager.getInstance().getFragment(itemId);
         } else {
-            // 创建新的Fragment并缓存
+            //create new fragment
             targetFragment = createFragment(itemId);
             if (targetFragment != null) {
                 FragmentCacheManager.getInstance().putFragment(itemId, targetFragment);
@@ -115,7 +115,7 @@ public class MainViewModel extends BaseViewModel {
 
         if (targetFragment != null) {
             switchFragment(targetFragment);
-            // 设置标题
+            // set fragment title
             if (targetFragment instanceof TitleProvider) {
                 activity.setTitle(((TitleProvider) targetFragment).getTitle());
             }
@@ -144,7 +144,7 @@ public class MainViewModel extends BaseViewModel {
         FragmentManager fragmentManager = activity.getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        // 隐藏当前Fragment，显示目标Fragment
+        // hide current Fragment，show target Fragment
         if (currentFragment != null) {
             fragmentTransaction.hide(currentFragment);
         }

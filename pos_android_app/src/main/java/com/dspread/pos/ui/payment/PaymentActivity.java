@@ -70,7 +70,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         QPOSCallbackManager.getInstance().registerCallback(MyCustomQPOSCallback.class, this);
         binding.setVariable(BR.viewModel, viewModel);
         viewModel.titleText.set("Paymenting");
-        // 获取传递的参数
         Intent intent = getIntent();
         if (intent != null) {
             amount = intent.getStringExtra("amount");
@@ -805,11 +804,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     protected void onDestroy() {
         super.onDestroy();
 
-        // 上传日志文件
-//        String log = logFileConfig.readLog();
-
-        // 上传文件内容到Bugly
-//        CrashReport.putUserData(this, "logFile_DSLogs", log);
         QPOSCallbackManager.getInstance().unregisterCallback(MyCustomQPOSCallback.class);
         PrinterHelper.getInstance().close();
     }
@@ -819,12 +813,10 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             @Override
             public void run() {
                 if (binding.tvReceipt.getWidth() <= 0) {
-                    // 等待下一个布局周期
                     binding.tvReceipt.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                         @Override
                         public void onGlobalLayout() {
                             binding.tvReceipt.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                            // 现在可以安全地获取宽度
                             Bitmap bitmap = viewModel.convertReceiptToBitmap(binding.tvReceipt);
                             if (listener != null) {
                                 listener.onBitmapReady(bitmap);
@@ -841,12 +833,11 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         });
     }
 
-    // 回调接口
+    // bitmap callback
     public interface OnBitmapReadyListener {
         void onBitmapReady(Bitmap bitmap);
     }
 
-    // 使用示例
     private void handleSendReceipt() {
         convertReceiptToBitmap(new OnBitmapReadyListener() {
             @Override

@@ -45,20 +45,20 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
     public void initData() {
         super.initData();
 
-        // 设置事件监听
+        // Setup event listeners
         setupEventListeners();
     }
 
     /**
-     * 设置事件监听
+     * Setup event listeners
      */
     private void setupEventListeners() {
-        // 选择设备事件
+        // Device selection event
         viewModel.selectDeviceEvent.observe(this, v -> {
             navigateToDeviceSelection();
         });
 
-        // 交易类型点击事件
+        // Transaction type click event
         viewModel.transactionTypeClickEvent.observe(this, v -> {
             Intent intent = new Intent(getActivity(), DeviceConfigActivity.class);
             intent.putExtra(DeviceConfigActivity.EXTRA_LIST_TYPE,
@@ -66,7 +66,7 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
             startActivityForResult(intent, REQUEST_TRANSACTION_TYPE);
         });
 
-        // 卡片模式点击事件
+        // Card mode click event
         viewModel.cardModeClickEvent.observe(this, v -> {
             Intent intent = new Intent(getActivity(), DeviceConfigActivity.class);
             intent.putExtra(DeviceConfigActivity.EXTRA_LIST_TYPE,
@@ -74,7 +74,7 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
             startActivityForResult(intent, REQUEST_CARD_MODE);
         });
 
-        // 货币代码点击事件
+        // Currency code click event
         viewModel.currencyCodeClickEvent.observe(this, v -> {
 //            showCurrencyCodeDialog();
             Intent intent = new Intent(getActivity(), DeviceConfigActivity.class);
@@ -85,12 +85,10 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
     }
 
     /**
-     * 导航到设备选择界面
+     * Navigate to device selection screen
      */
     private void navigateToDeviceSelection() {
-        // 创建Intent
         Intent intent = new Intent(getActivity(), DeviceSelectionActivity.class);
-        // 启动Activity并等待结果
         startActivityForResult(intent, DeviceSelectionActivity.REQUEST_CODE_SELECT_DEVICE);
     }
 
@@ -99,20 +97,20 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == Activity.RESULT_OK && data != null) {
             if (requestCode == DeviceSelectionActivity.REQUEST_CODE_SELECT_DEVICE) {
-                // 获取设备名称
+                // Get device name
                 String deviceName = data.getStringExtra(DeviceSelectionActivity.EXTRA_DEVICE_NAME);
 
-                // 获取连接类型
+                // Get connection type
                 String connectionType = data.getStringExtra(DeviceSelectionActivity.EXTRA_CONNECTION_TYPE);
 
-                // 更新设备名称
+                // pdate device name
                 if (deviceName != null) {
                     viewModel.updateDeviceName(connectionType + "(" + deviceName + ")");
                 } else {
                     viewModel.updateDeviceName(connectionType);
                 }
 
-                // 更新设备连接状态
+                // Update device connection status
                 if (connectionType != null) {
                     POS_TYPE posType = POS_TYPE.valueOf(connectionType);
                     viewModel.deviceConnected.set(posType != null);
@@ -128,7 +126,6 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
                 String transactionType = data.getStringExtra("transaction_type");
                 viewModel.transactionType.set(transactionType);
                 TRACE.i("transactionType = " + transactionType);
-                // 处理交易类型选择结果
             }else if(requestCode == REQUEST_CARD_MODE){
                 String cardMode = data.getStringExtra("card_mode");
                 viewModel.cardMode.set(cardMode);

@@ -181,14 +181,14 @@ public class PaymentViewModel extends BaseAppViewModel {
         );
 
         Canvas canvas = new Canvas(bitmap);
-        canvas.drawColor(Color.WHITE);  // 设置背景色为白色
+        canvas.drawColor(Color.WHITE);
         receiptView.layout(0, 0, receiptView.getWidth(), receiptView.getMeasuredHeight());
         receiptView.draw(canvas);
         receiptBitmap = bitmap;
         return bitmap;
     }
 
-    // 修改发送消息的方法
+    // send msg to dingding
     public void sendDingTalkMessage(boolean isICC, String tlvData, String message) {
         Map<String, Object> textContent = new HashMap<>();
         textContent.put("text", message);
