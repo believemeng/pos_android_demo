@@ -169,7 +169,8 @@ public class PinPadView extends RelativeLayout {
                 holder.btnNumber.setBackgroundColor(mContext.getResources().getColor(R.color.graye3));
             }
             if (position == 11) {
-                holder.btnNumber.setText("");
+                holder.btnNumber.setText("Clear");
+                holder.btnNumber.setTextSize(15);
                 holder.btnNumber.setBackgroundResource(listNumber.get(position));
             }
             if (position == 12) {
