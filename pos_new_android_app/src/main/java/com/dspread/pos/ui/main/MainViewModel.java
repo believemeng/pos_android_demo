@@ -30,6 +30,7 @@ import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.binding.command.BindingConsumer;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
+import me.goldze.mvvmhabit.utils.SPUtils;
 
 
 public class MainViewModel extends BaseViewModel {
@@ -40,7 +41,7 @@ public class MainViewModel extends BaseViewModel {
     public List<Fragment> fragments;
 
     private WeakReference<MainActivity> activityRef;
-    private Fragment currentFragment;
+    public Fragment currentFragment;
     public HomeFragment homeFragment;
     private MyBaseApplication myBaseApplication;
     public QPOSService pos;
@@ -54,13 +55,21 @@ public class MainViewModel extends BaseViewModel {
         if(myBaseApplication == null){
             myBaseApplication = (MyBaseApplication) BaseApplication.getInstance();
         }
+        TRACE.i("22 = "+homeFragment);
     }
+
+    public void setHomeFragment(HomeFragment fragment) {
+        this.homeFragment = fragment;
+        TRACE.i("11 = "+homeFragment);
+    }
+
     public void openDevice(){
         if(DeviceUtils.isSmartDevices()){
             myBaseApplication.open(QPOSService.CommunicationMode.UART, getApplication());
             pos = myBaseApplication.getQposService();
             pos.setDeviceAddress("/dev/ttyS1");
             pos.openUart();
+            SPUtils.getInstance().put("isConnectedAutoed",true);
         }
     }
 
@@ -117,6 +126,7 @@ public class MainViewModel extends BaseViewModel {
         switch (itemId) {
             case R.id.nav_home:
                 homeFragment = new HomeFragment();
+                TRACE.i("homeFragment = "+homeFragment);
                 return homeFragment;
             case R.id.nav_setting:
                 return new ConnectionSettingsFragment();
@@ -150,7 +160,11 @@ public class MainViewModel extends BaseViewModel {
     }
 
     public boolean onKeyDownInHome(int keyCode, KeyEvent event){
-       return homeFragment.onKeyDown(keyCode,event);
+        TRACE.i("noe hoeme = "+homeFragment);
+        if (homeFragment != null) {
+            return homeFragment.onKeyDown(keyCode, event);
+        }
+        return false;
     }
 
 }

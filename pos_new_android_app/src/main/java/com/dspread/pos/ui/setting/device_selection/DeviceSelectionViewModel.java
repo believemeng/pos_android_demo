@@ -84,7 +84,7 @@ public class DeviceSelectionViewModel extends BaseViewModel {
                 currentPOSType = POS_TYPE.UART;
             }else if(connectedDeviceName.equals(POS_TYPE.USB.name())){
                 currentPOSType = POS_TYPE.USB;
-            }else if(connectedDeviceName.equals(POS_TYPE.BLUETOOTH.name())){
+            }else if(connectedDeviceName.contains(POS_TYPE.BLUETOOTH.name())){
                 currentPOSType = POS_TYPE.BLUETOOTH;
             }
             loadSelectedConnectionMethod(connectedDeviceName);
@@ -138,6 +138,10 @@ public class DeviceSelectionViewModel extends BaseViewModel {
         POSCommand.getInstance().scanQPos2Mode(getApplication(),20);
     }
 
+    public void stopScanBluetooth(){
+        POSCommand.getInstance().stopScanQPos2Mode();
+    }
+
     /**
      * 确认选择命令
      */
@@ -146,7 +150,10 @@ public class DeviceSelectionViewModel extends BaseViewModel {
         if (index != null && index >= 0 && index < connectionMethods.length && !getApplication().getString(R.string.disconnect).equals(connectBtnTitle.get())) {
             // 触发选择完成事件
             isConnecting.set(true);
-            POSCommand.getInstance().close(currentPOSType);
+            if(!"".equals(SPUtils.getInstance().getString("device_type"))){
+                TRACE.i("currentPOSType = "+currentPOSType);
+                POSCommand.getInstance().close(currentPOSType);
+            }
             openDevice(posTypes[index]);
         } else if(getApplication().getString(R.string.disconnect).equals(connectBtnTitle.get())){
             POSCommand.getInstance().close(currentPOSType);

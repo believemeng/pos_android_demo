@@ -17,11 +17,9 @@ import com.dspread.pos.common.base.BaseAppViewModel;
 import com.dspread.pos.common.http.RetrofitClient;
 import com.dspread.pos.common.http.api.DingTalkApiService;
 import com.dspread.pos.printerAPI.PrinterHelper;
-import com.dspread.pos.utils.ReceiptGenerator;
 import com.dspread.pos.utils.TLV;
 import com.dspread.pos.utils.TLVParser;
 import com.dspread.pos.utils.TRACE;
-import com.dspread.pos_new_android_app.R;
 import com.dspread.print.device.PrintListener;
 import com.dspread.print.device.PrinterDevice;
 import com.dspread.print.device.PrinterManager;
@@ -57,6 +55,7 @@ public class PaymentViewModel extends BaseAppViewModel {
     public ObservableField<String> titleText = new ObservableField<>("Payment");
     public ObservableBoolean isWaiting = new ObservableBoolean(true);
     public ObservableBoolean isSuccess = new ObservableBoolean(false);
+    public ObservableBoolean isPrinting = new ObservableBoolean(false);
     public SingleLiveEvent<Boolean> isOnlineSuccess = new SingleLiveEvent();
     public SingleLiveEvent<Boolean> isContinueTrx = new SingleLiveEvent();
     public ObservableBoolean showPinpad = new ObservableBoolean(false);
@@ -144,6 +143,7 @@ public class PaymentViewModel extends BaseAppViewModel {
     public BindingCommand sendReceiptCommand = new BindingCommand(new BindingAction() {
         @Override
         public void call() {
+            isPrinting.set(true);
             PrinterManager instance = PrinterManager.getInstance();
             PrinterDevice mPrinter = instance.getPrinter();
             PrinterHelper.getInstance().setPrinter(mPrinter);
@@ -159,6 +159,7 @@ public class PaymentViewModel extends BaseAppViewModel {
                     @Override
                     public void printResult(boolean b, String s, PrinterDevice.ResultType resultType) {
                         ToastUtils.showShort("Print Finished!");
+                        isPrinting.set(false);
                         finish();
                     }
                 });

@@ -9,12 +9,15 @@ import androidx.databinding.ObservableField;
 import com.dspread.pos.MyBaseApplication;
 import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.posAPI.POSCommand;
+import com.dspread.pos.utils.DeviceUtils;
+import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_new_android_app.R;
 import com.dspread.xpos.QPOSService;
 
 import me.goldze.mvvmhabit.base.BaseApplication;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
+import me.goldze.mvvmhabit.binding.command.BindingConsumer;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
 import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
@@ -72,7 +75,7 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
                 currentPOSType = POS_TYPE.UART;
             }else if(savedDeviceName.equals(POS_TYPE.USB.name())){
                 currentPOSType = POS_TYPE.USB;
-            }else {
+            }else  if(savedDeviceName.equals(POS_TYPE.BLUETOOTH.name())){
                 currentPOSType = POS_TYPE.BLUETOOTH;
             }
         }
@@ -108,34 +111,48 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
     public void saveSettings() {
         // 保存设备连接状态
         SPUtils.getInstance().put("isConnected", deviceConnected.get());
-        
-        // 保存设备名称
-        SPUtils.getInstance().put("device_type", deviceName.get());
+        if("".equals(deviceName)||"No device".equals(deviceName)) {
+            // 保存设备名称
+            SPUtils.getInstance().put("device_type", "");
+        }else {
+            if(deviceName.get().contains(POS_TYPE.BLUETOOTH.name())){
+                SPUtils.getInstance().put("device_type", POS_TYPE.BLUETOOTH.name());
+            }else {
+                SPUtils.getInstance().put("device_type", deviceName.get());
+            }
+        }
     }
+
+    public BindingCommand<Boolean> onCheckedChangeCommand = new BindingCommand<>(new BindingConsumer<Boolean>() {
+        @Override
+        public void call(Boolean isChecked) {
+            TRACE.i("switch changed: " + isChecked);
+            deviceConnected.set(isChecked);
+            // 其他业务逻辑
+        }
+    });
 
     /**
      * 设备开关切换命令
      */
     public BindingCommand toggleDeviceCommand = new BindingCommand(() -> {
+        TRACE.i("is statrt click switch check == ");
+        boolean isConnectedAutoed = SPUtils.getInstance().getBoolean("isConnectedAutoed");
         deviceConnected.set(!deviceConnected.get());
-        String deviceType = SPUtils.getInstance().getString("device_type", "");
-        if(!"".equals(deviceType)){
-            if(deviceConnected.get()){
-                if(POS_TYPE.BLUETOOTH.name().equals(deviceType)){
-                    baseApplication.open(QPOSService.CommunicationMode.BLUETOOTH, getApplication());
-                    POSCommand.getInstance().connectBluetoothDevice(true,25,SPUtils.getInstance().getString("device_name",""));
-                }else if(POS_TYPE.UART.name().equals(deviceType)){
-                    baseApplication.open(QPOSService.CommunicationMode.UART, getApplication());
-                    POSCommand.getInstance().setDeviceAddress("/dev/ttyS1");
-                    POSCommand.getInstance().openUart();
-                }else {
-                    selectDeviceEvent.call();
+         {
+
+            String deviceType = SPUtils.getInstance().getString("device_type", "");
+            if (deviceConnected.get() && !isConnectedAutoed) {
+                selectDeviceEvent.call();
+            } else {
+                if (!"".equals(deviceType)) {
+                    POSCommand.getInstance().close(DeviceUtils.getDevicePosType(deviceType));
                 }
-            }else {
-                POSCommand.getInstance().close(currentPOSType);
+                SPUtils.getInstance().put("isConnectedAutoed",false);
+                updateDeviceName("No device");
             }
+            saveSettings();
         }
-        saveSettings();
     });
 
     /**

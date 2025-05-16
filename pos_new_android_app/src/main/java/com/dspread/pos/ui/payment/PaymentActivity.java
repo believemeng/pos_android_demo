@@ -806,7 +806,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         super.onDestroy();
 
         // 上传日志文件
-        String log = logFileConfig.readLog();
+//        String log = logFileConfig.readLog();
 
         // 上传文件内容到Bugly
 //        CrashReport.putUserData(this, "logFile_DSLogs", log);

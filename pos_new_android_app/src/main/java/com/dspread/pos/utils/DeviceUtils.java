@@ -8,6 +8,9 @@ import android.provider.Settings;
 import android.telephony.TelephonyManager;
 
 import androidx.annotation.RequiresApi;
+import androidx.navigation.PopUpToBuilder;
+
+import com.dspread.pos.common.enums.POS_TYPE;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -170,6 +173,17 @@ public class DeviceUtils {
             TRACE.d("not found pacakge == " + e.toString());
             return false;
         }
+    }
+
+    public static POS_TYPE getDevicePosType(String deviceTypeName){
+        if(deviceTypeName.equals(POS_TYPE.UART.name())){
+            return POS_TYPE.UART;
+        } else if (deviceTypeName.equals(POS_TYPE.USB.name())) {
+            return POS_TYPE.USB;
+        } else if (deviceTypeName.equals(POS_TYPE.BLUETOOTH.name())) {
+            return POS_TYPE.BLUETOOTH;
+        }
+        return POS_TYPE.BLUETOOTH;
     }
 
     public static final String UART_AIDL_SERVICE_APP_PACKAGE_NAME = "com.dspread.sdkservice";//新架构的service包名

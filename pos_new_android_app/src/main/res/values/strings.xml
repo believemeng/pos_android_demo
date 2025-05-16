@@ -534,4 +534,5 @@
     <string name="currency_code">Currency Code</string>
     <string name="send_receipt">Send Receipt</string>
     <string name="connect_warnning">Pls connect your devices first!</string>
+    <string name="no_device">No device</string>
 </resources>

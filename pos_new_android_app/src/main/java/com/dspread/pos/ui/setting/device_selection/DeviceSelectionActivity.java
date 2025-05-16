@@ -109,6 +109,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
 
         // 初始化适配器
         bluetoothAdapter = new BluetoothDeviceAdapter(this,device -> {
+            viewModel.stopScanBluetooth();
             viewModel.connectBtnTitle.set("Connect to "+device.getAddress());
             viewModel.bluetoothAddress.set(device.getAddress());
             viewModel.bluetoothName.set(device.getName());
@@ -249,6 +250,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
             viewModel.currentPOSType = viewModel.posTypes[viewModel.selectedIndex.getValue()];
             viewModel.connectedDeviceName = viewModel.currentPOSType.name();
             SPUtils.getInstance().put("device_type",viewModel.currentPOSType.name());
+            SPUtils.getInstance().put("isConnectedAutoed",true);
         });
     }
 
@@ -256,6 +258,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     public void onRequestQposDisconnected() {
         SPUtils.getInstance().put("device_type","");
         SPUtils.getInstance().put("isConnected",false);
+        SPUtils.getInstance().put("isConnectedAutoed",false);
         runOnUiThread(() -> {
             try {
                 viewModel.isConnecting.set(false);
@@ -281,6 +284,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     public void onRequestNoQposDetected() {
         MyCustomQPOSCallback.super.onRequestNoQposDetected();
         runOnUiThread(() -> {
+            SPUtils.getInstance().put("isConnectedAutoed",false);
             viewModel.isConnecting.set(false);
             SPUtils.getInstance().put("device_name","");
         });

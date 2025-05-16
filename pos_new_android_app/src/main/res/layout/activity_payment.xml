@@ -166,6 +166,7 @@
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:gravity="center"
+                    android:enabled="@{!viewModel.isPrinting}"
                     binding:onClickCommand="@{viewModel.continueTxnsCommand}"/>
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_send_receipt"
@@ -182,6 +183,7 @@
                     android:ellipsize="end"
                     android:gravity="center"
                     app:cornerRadius="8dp"
+                    android:enabled="@{!viewModel.isPrinting}"
                     binding:onClickCommand="@{viewModel.sendReceiptCommand}"/>
             </LinearLayout>
             </LinearLayout>

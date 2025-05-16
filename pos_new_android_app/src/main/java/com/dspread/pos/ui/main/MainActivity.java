@@ -80,8 +80,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         super.initData();
         viewModel.handleNavigationItemClick(R.id.nav_home);
         QPOSCallbackManager.getInstance().registerCallback(MyCustomQPOSCallback.class, this);
-        viewModel = new MainViewModel(getApplication(), this);
-        binding.setVariable(BR.viewModel, viewModel);
+//        viewModel = new MainViewModel(getApplication(), this);
+//        binding.setVariable(BR.viewModel, viewModel);
         drawerLayout = binding.drawerLayout;
         navigationView = binding.navView;
         toolbar = binding.toolbar;
@@ -147,9 +147,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             }
             return true;
         }else {
-            return viewModel.onKeyDownInHome(keyCode,event);
+            if (action == KeyEvent.ACTION_UP) {
+                TRACE.i("---- = "+viewModel.homeFragment);
+                return viewModel.onKeyDownInHome(keyCode,event);
+            }
+
+            return super.dispatchKeyEvent(event);
         }
-//        return super.dispatchKeyEvent(event); // 调用父类的dispatchKeyEvent方法，将事件传递给其他组件
     }
 
 
