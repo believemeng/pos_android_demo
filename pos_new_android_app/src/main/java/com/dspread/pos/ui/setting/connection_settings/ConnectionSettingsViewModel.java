@@ -122,38 +122,45 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
             }
         }
     }
-
-    public BindingCommand<Boolean> onCheckedChangeCommand = new BindingCommand<>(new BindingConsumer<Boolean>() {
+    public BindingCommand<Boolean> toggleDeviceCommand = new BindingCommand<>(new BindingConsumer<Boolean>() {
         @Override
         public void call(Boolean isChecked) {
-            TRACE.i("switch changed: " + isChecked);
             deviceConnected.set(isChecked);
-            // 其他业务逻辑
-        }
-    });
-
-    /**
-     * 设备开关切换命令
-     */
-    public BindingCommand toggleDeviceCommand = new BindingCommand(() -> {
-        TRACE.i("is statrt click switch check == ");
-        boolean isConnectedAutoed = SPUtils.getInstance().getBoolean("isConnectedAutoed");
-        deviceConnected.set(!deviceConnected.get());
-         {
-
             String deviceType = SPUtils.getInstance().getString("device_type", "");
-            if (deviceConnected.get() && !isConnectedAutoed) {
-                selectDeviceEvent.call();
-            } else {
-                if (!"".equals(deviceType)) {
-                    POSCommand.getInstance().close(DeviceUtils.getDevicePosType(deviceType));
+            if (!"".equals(deviceType)) {
+                if (isChecked) {
+                    selectDeviceEvent.call();
+                } else {
+                    POSCommand.getInstance().close(currentPOSType);
+                    SPUtils.getInstance().put("isConnectedAutoed",false);
+                    updateDeviceName("No device");
                 }
-                SPUtils.getInstance().put("isConnectedAutoed",false);
-                updateDeviceName("No device");
             }
             saveSettings();
         }
     });
+//    /**
+//     * 设备开关切换命令
+//     */
+//    public BindingCommand toggleDeviceCommand = new BindingCommand(() -> {
+//        TRACE.i("is statrt click switch check == ");
+//        boolean isConnectedAutoed = SPUtils.getInstance().getBoolean("isConnectedAutoed");
+//        deviceConnected.set(!deviceConnected.get());
+//         {
+//
+//            String deviceType = SPUtils.getInstance().getString("device_type", "");
+//            if (deviceConnected.get() && !isConnectedAutoed) {
+//                selectDeviceEvent.call();
+//            } else {
+//                if (!"".equals(deviceType)) {
+//                    POSCommand.getInstance().close(DeviceUtils.getDevicePosType(deviceType));
+//                }
+//                SPUtils.getInstance().put("isConnectedAutoed",false);
+//                updateDeviceName("No device");
+//            }
+//            saveSettings();
+//        }
+//    });
 
     /**
      * 选择设备命令
