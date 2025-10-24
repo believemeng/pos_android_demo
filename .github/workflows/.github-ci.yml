@@ -3,10 +3,10 @@ name: Android CI/CD
 on:
   push:
     branches:
-      - master  # 触发 CI/CD 的分支
+      - main  # 触发 CI/CD 的分支
   pull_request:
     branches:
-      - master  # 监听到 PR 到 main 分支时触发 CI/CD
+      - main  # 监听到 PR 到 main 分支时触发 CI/CD
 
 jobs:
   lint:
@@ -187,7 +187,7 @@ jobs:
             "DownloadUrl": "'$APK_DOWNLOAD_PATH'",
             "buildId": "'${GITHUB_SHA}'"
           }' > version_info.json   
-          
+
       - name: Upload version_info.json to Release
         uses: softprops/action-gh-release@v1
         with:
