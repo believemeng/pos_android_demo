@@ -73,7 +73,7 @@ dependencies {
 //    implementation 'com.dspread.library:dspread_pos_sdk:7.1.2'
 
     implementation project(':mvvmhabit')
-    api files('libs/dspread_pos_sdk_7.2.8.jar')
+    api files('libs/dspread_pos_sdk_8.0.1.aar')
 //    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     api rootProject.ext.dependencies["lifecycle-extensions"]
     annotationProcessor rootProject.ext.dependencies["lifecycle-compiler"]
