@@ -171,9 +171,7 @@ jobs:
           files: |
             pos_android_app/build/outputs/apk/release/pos_android_app-release.apk
             ${{ steps.verify-sdk.outputs.POS_SDK }}
-          
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate JSON file
         run: |
