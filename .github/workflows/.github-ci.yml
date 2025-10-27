@@ -157,13 +157,6 @@ jobs:
           COMMIT_MESSAGE=$(echo "$COMMIT_MESSAGE" | tr -d '\n')
           echo "COMMIT_MESSAGE=$COMMIT_MESSAGE" >> $GITHUB_ENV
 
-      - name: Create and push tag
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git tag -a "${{ env.TAG_NAME }}" -m "Release ${{ env.VERSION_NAME }}"
-          git push origin "${{ env.TAG_NAME }}"
-          
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
@@ -181,46 +174,27 @@ jobs:
             ${{ steps.verify-sdk.outputs.POS_SDK }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Generate JSON file
-        run: |
-          echo "Generating version information JSON file..."
-          APK_DOWNLOAD_PATH="https://github.com/${{ github.repository }}/releases/download/${{ env.tag_name }}/pos_android_app-release.apk"
-          echo '{
-            "VersionCode": "'${{ env.VERSION_CODE }}'",
-            "VersionName": "'${{ env.VERSION_NAME }}'",
-            "ModifyContent": "'${{ env.COMMIT_MESSAGE }}'",
-            "DownloadUrl": "'$APK_DOWNLOAD_PATH'",
-            "buildId": "'${GITHUB_SHA}'"
-          }' > version_info.json   
+      # # # 读取并上传 SDK 库
+      # - name: Upload SDK Libraries
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     tag_name: ${{ steps.get-latest-tag.outputs.LATEST_TAG }}
+      #     files: |
+      #       pos_android_app/libs/dspread_pos_sdk_*.aar
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub Token 进行认证  
 
-      - name: Upload version_info.json to Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ env.TAG_NAME }}
-          files: version_info.json
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # # 读取并上传 SDK 库
-      - name: Upload SDK Libraries
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ steps.get-latest-tag.outputs.LATEST_TAG }}
-          files: |
-            pos_android_app/libs/dspread_pos_sdk_*.aar
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub Token 进行认证  
-
-      # 上传 version_info.json 和library 文件
-      - name: Upload JSON to GitHub Releases
-        uses: softprops/action-gh-release@v1
-        with:
-          #tag_name: ${{ github.ref_name }}
-          tag_name: "Release"
-          files: |
-            version_info.json  
-            ${{ steps.verify-sdk.outputs.POS_SDK }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub Token 进行认证
+      # # 上传 version_info.json 和library 文件
+      # - name: Upload JSON to GitHub Releases
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     #tag_name: ${{ github.ref_name }}
+      #     tag_name: "Release"
+      #     files: |
+      #       version_info.json  
+      #       ${{ steps.verify-sdk.outputs.POS_SDK }}
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub Token 进行认证
           
   deploy:
     runs-on: ubuntu-latest  # 使用 Ubuntu 作为运行环境
