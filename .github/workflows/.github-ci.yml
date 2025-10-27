@@ -83,9 +83,9 @@ jobs:
        #  解码并保存 keystore 文件
       - name: Decode and Save Keystore
         run: |
-          echo "${{ vars.KEYSTORE_FILE }}" | base64 -d > /app.keystore
+          echo "${{ vars.KEYSTORE_FILE }}" | base64 -d > app.keystore
              # 验证文件
-          ls -la /app.keystore
+          ls -la app.keystore
 
       - name: Build the release signed APK
         run: |
