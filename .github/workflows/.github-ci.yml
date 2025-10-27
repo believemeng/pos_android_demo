@@ -83,15 +83,15 @@ jobs:
        #  解码并保存 keystore 文件
       - name: Decode and Save Keystore
         run: |
-          echo "${{ vars.KEYSTORE_FILE }}" | base64 -d > pos_android_app/app.keystore
+          echo "${{ vars.KEYSTORE_FILE }}" | base64 -d > /app.keystore
              # 验证文件
-          ls -la pos_android_app/app.keystore
+          ls -la /app.keystore
 
       - name: Build the release signed APK
         run: |
             chmod +x ./gradlew
             ./gradlew assembleRelease \
-            -Pandroid.injected.signing.store.file=pos_android_app/app.keystore \
+            -Pandroid.injected.signing.store.file=app.keystore \
             -Pandroid.injected.signing.store.password=${{ vars.KEYSTORE_PASSWORD }} \
             -Pandroid.injected.signing.key.alias=${{ vars.KEY_ALIAS }} \
             -Pandroid.injected.signing.key.password=${{ vars.KEY_PASSWORD }}
