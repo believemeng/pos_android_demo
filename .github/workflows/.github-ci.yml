@@ -84,6 +84,8 @@ jobs:
       - name: Decode and Save Keystore
         run: |
           echo "${{ vars.KEYSTORE_FILE }}" | base64 -d > pos_android_app/app.keystore
+             # 验证文件
+          ls -la pos_android_app/app.keystore
 
       - name: Build the release signed APK
         run: |

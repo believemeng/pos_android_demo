@@ -19,12 +19,6 @@ android {
             keyPassword 'dspread'
             keyAlias 'gundam_wing'
         }
-        config {
-            keyAlias 'key0'
-            keyPassword '123789'
-            storeFile file('dspread.jks')
-            storePassword '123789'
-        }
     }
 
     defaultConfig {
